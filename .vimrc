@@ -3,7 +3,16 @@ filetype plugin indent on
 syntax on
 set smartindent
 set number
-set termguicolors
+
+if (empty($TMUX))
+    if (has("nvim"))
+        let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    endif
+    if (has("termguicolors"))
+        set termguicolors
+    endif
+endif
+
 set ts=4 sw=4
 let mapleader = "\\"
 set nocp
@@ -22,8 +31,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 Plug 'preservim/nerdtree'
-
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tpope/vim-commentary'
 
 Plug 'sirver/ultisnips'
 let g:UltiSnipsExpandTrigger = '<leader><tab>'
@@ -33,17 +41,17 @@ let g:UltiSnipsSnippetDirectories = ["~/.vim/UltiSnips"]
 
 Plug 'itchyny/lightline.vim'
 
+let g:lightline = {
+  \ 'colorscheme': 'onedark',
+  \ }
 
+Plug 'evanleck/vim-svelte', {'branch': 'main'}
 call plug#end()
 
 map <C-n> :NERDTreeToggle<CR>
 let g:NERDTreeHijackNetrw = 0
 
 colorscheme onedark
-
-let g:lightline = {
-  \ 'colorscheme': 'onedark',
-  \ }
 
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 au FocusGained,BufEnter * :checktime
