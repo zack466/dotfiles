@@ -21,6 +21,12 @@ vim.opt.scrolloff = 4;
 vim.opt.sidescrolloff = 4;
 vim.opt.whichwrap = "";
 
+-- swap lines up and down in visual mode
+vim.cmd([[
+  vnoremap K :m '<-2<CR>gv=gv
+  vnoremap J :m '>+1<CR>gv=gv
+]])
+
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<cr>"
 lvim.builtin.which_key.mappings[","] = { "<cmd>BufferLineCyclePrev<cr>", "Previous Buffer" }
@@ -141,7 +147,9 @@ lvim.builtin.treesitter.highlight.enable = true
 
 -- ---configure a server manually. !!Requires `:LvimCacheReset` to take effect!!
 -- ---see the full default list `:lua print(vim.inspect(lvim.lsp.automatic_configuration.skipped_servers))`
--- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "jdtls" }) -- custom lsp/dap config in ftplugin/java.lua
+
 -- local opts = {} -- check the lspconfig documentation for a list of all possible options
 -- require("lvim.lsp.manager").setup("pyright", opts)
 
@@ -253,6 +261,12 @@ lvim.plugins = {
   },
   {
     "tpope/vim-repeat"
+  },
+  {
+    "jremmen/vim-ripgrep"
+  },
+  {
+    "mfussenegger/nvim-jdtls",
   },
 }
 
