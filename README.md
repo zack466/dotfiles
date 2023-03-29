@@ -28,11 +28,11 @@
 - `m` to select a makefile target using [fzf](https://github.com/junegunn/fzf)
 
 ## [Yabai](https://github.com/koekeishiya/yabai) - `.config/yabai/yabairc`, `.config/skhd/skhdrc`
-- I have it installed with macports, and I'm using version 4.0.1 (last time I tried to update, everything broke)
+- I have it installed with macports
 - Bindings are controlled using skhd (see `skhdrc`)
   - I used [Amethyst](https://ianyh.com/amethyst/) before switching to yabai, so my bindings tend to use shift-alt and shift-ctrl-alt as prefixes
 - Note that if you're installing this for the first time, you have to go through a slightly convoluted procedure to [disable SIP](https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection) so that everything works properly
-- Credit where credit's due: I stole most this config from [ericlovesmath](https://github.com/ericlovesmath/dotfiles)
+- Credit where credit's due: I stole most of this config from [ericlovesmath](https://github.com/ericlovesmath/dotfiles)
 
 ## [Wezterm](https://wezfurlong.org/wezterm/) - `.config/wezterm/wezterm.lua`
 - installed using macports
