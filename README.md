@@ -15,9 +15,9 @@
 - `init.lua` simply loads `~/.vimrc`
 - works with vim, neovim, and macvim
 
-## [LunarVim](https://www.lunarvim.org/) - `.config/lvim/config.lua`
+## [LunarVim](https://www.lunarvim.org/) - `.config/lvim/`
 - A really great neovim IDE layer (my daily driver)
-- check my config file for all the mappings and plugins (basically the same as my neovim mappings, but more of them)
+- main config file is `config.lua`, with additional modules in `lua/user`
 
 ## [zsh](https://zsh.sourceforge.io/) - `.zshrc`
 - many random aliases and stuff, plus configuration for various programs
@@ -34,9 +34,10 @@
 - Note that if you're installing this for the first time, you have to go through a slightly convoluted procedure to [disable SIP](https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection) so that everything works properly
 - Credit where credit's due: I stole most this config from [ericlovesmath](https://github.com/ericlovesmath/dotfiles)
 
-## [Alacritty](https://github.com/alacritty/alacritty) - `.alacritty.yml`
+## [Wezterm](https://wezfurlong.org/wezterm/) - `.config/wezterm/wezterm.lua`
 - installed using macports
-- pretty basic - it just specifies font and colors (and deals with [alt-keys on MacOS](https://github.com/alacritty/alacritty/issues/62#issuecomment-347552058))
+- I quite like the lua-based configuration
+- I switched from Alacritty because... why not? Just wanted to change things up
 
 ## [Emacs](https://www.gnu.org/software/emacs/)
 - I don't currently use Emacs, but I've tried [Doom Emacs](https://github.com/doomemacs/doomemacs) in the past, and it's pretty great

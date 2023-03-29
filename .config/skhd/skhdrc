@@ -112,7 +112,7 @@ shift + alt - a : yabai -m space --layout bsp
 shift + alt - d : yabai -m space --layout float
 
 # opens terminal
-ctrl - return : /Applications/MacPorts/Alacritty.app/Contents/MacOS/alacritty --command /opt/local/bin/tmux new-session
+ctrl - return : wezterm
 
 # Navigate browser tabs
 #meh - q : skhd -k "ctrl + shift - tab"
@@ -121,14 +121,12 @@ ctrl - return : /Applications/MacPorts/Alacritty.app/Contents/MacOS/alacritty --
 #hyper - e : skhd -k "ctrl + shift - pagedown"
 
 # Toggles floating window
-# shift + alt - u : yabai -m window --toggle float; \
-#         yabai -m window --grid 8:8:1:1:6:6
+shift + alt - u : yabai -m window --toggle float; \
+        yabai -m window --grid 8:8:1:1:6:6
 
 
 shift + alt - c : /Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox
 shift + ctrl + alt - c : /Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox --args -private-window
-shift + alt - m : /Applications/Spotify.app/Contents/MacOS/Spotify
-# delete : osascript ~/bin/spotify-toggle.scpt
 
 #shift + alt - p : yabai -m window --toggle sticky;\
           #yabai -m window --toggle topmost
