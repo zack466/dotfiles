@@ -5,7 +5,7 @@
 
 local M = {}
 M.setup = function()
-  lvim.lsp.diagnostics.virtual_text = true
+  vim.diagnostic.config({ virtual_text = true });
   lvim.builtin.treesitter.highlight.enable = true
 
   -- auto install treesitter parsers

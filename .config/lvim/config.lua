@@ -1,7 +1,8 @@
 -- Lunarvim Settings
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
-lvim.colorscheme = "lunar"
+-- lvim.colorscheme = "lunar"
+lvim.colorscheme = "catppuccin-mocha"
 lvim.line_wrap_cursor_movement = false
 lvim.leader = "space"
 -- lvim.builtin.lualine.style = "default"
@@ -25,11 +26,24 @@ vim.cmd([[
   vnoremap J :m '>+1<CR>gv=gv
 ]])
 
+vim.cmd([[
+  let g:tex_flavor = 'latex'
+]])
+
+-- github copilot
+vim.cmd([[
+  imap <silent> <C-,> <Plug>(copilot-next)
+  imap <silent> <C-,> <Plug>(copilot-previous)
+  imap <silent> <C-/> <Plug>(copilot-dismiss)
+]])
+
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.keys.normal_mode["<C-n>"] = ":NvimTreeToggle<cr>"
 lvim.keys.normal_mode["<C-t>"] = ":ToggleTerm<cr>" -- <C-\> to close
 lvim.keys.normal_mode["j"] = "gj"
 lvim.keys.normal_mode["k"] = "gk"
+lvim.keys.normal_mode["H"] = "<cmd>BufferLineCyclePrev<cr>"
+lvim.keys.normal_mode["L"] = "<cmd>BufferLineCycleNext<cr>"
 
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
@@ -65,8 +79,8 @@ lvim.builtin.treesitter.ensure_installed = {
   "yaml",
 }
 
-require("user.which-key").setup()
 require("user.plugins").setup()
+require("user.which-key").setup()
 require("user.runner").setup()
 require("user.autocommands").setup()
 require("user.lsp.clangd").setup()

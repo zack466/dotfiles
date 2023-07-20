@@ -1,14 +1,23 @@
 local M = {}
 M.setup = function()
-  lvim.builtin.which_key.setup.plugins.presets = {
-    operators = false, -- adds help for operators like d, y, ... and registers them for motion / text object completion
-    motions = false, -- adds help for motions
-    text_objects = false, -- help for text objects triggered after entering an operator
-    windows = true, -- default bindings on <c-w>
-    nav = true, -- misc bindings to work with windows
-    z = true, -- bindings for folds, spelling and others prefixed with z
-    g = true, -- bindings for prefixed with g
+  lvim.builtin.which_key.setup = {
+    plugins = {
+      marks = true, -- shows a list of your marks on ' and `
+      registers = true, -- shows your registers on " in NORMAL or <C-r> in INSERT mode
+      -- the presets plugin, adds help for a bunch of default keybindings in Neovim
+      -- No actual key bindings are created
+      presets = {
+        operators = false, -- adds help for operators like d, y, ...
+        motions = false, -- adds help for motions
+        text_objects = false, -- help for text objects triggered after entering an operator
+        windows = true, -- default bindings on <c-w>
+        nav = true, -- misc bindings to work with windows
+        z = true, -- bindings for folds, spelling and others prefixed with z
+        g = true, -- bindings for prefixed with g
+      },
+    },
   }
+
   lvim.builtin.which_key.mappings["q"] = { ":q<cr>", "Quit" }
   lvim.builtin.which_key.mappings["C"] = { ":bd<cr>", "Delete Buffer" }
   lvim.builtin.which_key.mappings[" "] = { "<cmd>Telescope find_files<cr>", "Find Files" }
@@ -18,9 +27,8 @@ M.setup = function()
 
   lvim.builtin.which_key.mappings["e"] = {
     function()
-      local config = lvim.lsp.diagnostics.float
-      config.scope = "line"
-      vim.diagnostic.open_float(config)
+      vim.diagnostic.config({ float = true } );
+      vim.diagnostic.open_float()
     end,
     "Show line diagnostics",
   }

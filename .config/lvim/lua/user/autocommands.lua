@@ -16,6 +16,7 @@ M.setup = function()
       rust = 4,
       tex = 4,
       typescript = 2,
+      ocaml = 2,
     },
   }
 

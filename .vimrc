@@ -32,7 +32,6 @@ nnoremap gk k
 vnoremap K :m '<-2<CR>gv=gv
 vnoremap J :m '>+1<CR>gv=gv
 
-
 " Persistent undo
 if has('persistent_undo')
 	call system('mkdir ~/.vim')

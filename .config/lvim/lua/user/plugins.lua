@@ -57,6 +57,25 @@ M.setup = function()
     {
       "mfussenegger/nvim-jdtls"
     },
+    {
+      "lervag/vimtex",
+      ft = "tex",
+      lazy = false,
+    },
+    {
+      "github/copilot.vim"
+    },
+    {
+      "catppuccin/nvim",
+      name = "catppuccin",
+      priority = 1000,
+      config = function()
+      --   require("catppuccin").setup({
+      --     integrations = {
+      --     }
+      -- })
+      end
+    }
   }
 
 end
