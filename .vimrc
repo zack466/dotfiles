@@ -11,6 +11,8 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'jremmen/vim-ripgrep'
 call plug#end()
 
 runtime macros/sandwich/keymap/surround.vim
@@ -20,6 +22,10 @@ let mapleader=" "
 nnoremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>h :nohlsearch<cr>
+nnoremap <leader>, :bprev<cr>
+nnoremap <leader>. :bnext<cr>
+nnoremap <leader>c :bdelete<cr>
+nnoremap <leader><leader> :CtrlP<cr>
 nnoremap <C-n> :NERDTreeToggle<cr>
 
 " swap display line up/down
