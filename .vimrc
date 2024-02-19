@@ -2,10 +2,10 @@
 set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
 set number
 set clipboard^=unnamed
+set re=0
 
 " Plugins
 call plug#begin()
-Plug 'tpope/vim-sensible'
 Plug 'machakann/vim-sandwich'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-commentary'
@@ -13,9 +13,14 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'jremmen/vim-ripgrep'
+Plug 'jpalardy/vim-slime'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 call plug#end()
 
+" Plugin configuration
 runtime macros/sandwich/keymap/surround.vim
+let g:slime_target = 'tmux'
+let g:slime_bracketed_paste = 1
 
 " Mappings
 let mapleader=" "
@@ -27,6 +32,7 @@ nnoremap <leader>. :bnext<cr>
 nnoremap <leader>c :bdelete<cr>
 nnoremap <leader><leader> :CtrlP<cr>
 nnoremap <C-n> :NERDTreeToggle<cr>
+vnoremap <C-a> :s/\d\+/\=(submatch(0)+1)/g<cr>:nohlsearch<cr>
 
 " swap display line up/down
 nnoremap j gj
@@ -47,3 +53,6 @@ if has('persistent_undo')
 	set undolevels=1000
 	set undoreload=10000
 endif
+
+" the most important part
+colorscheme catppuccin_mocha
