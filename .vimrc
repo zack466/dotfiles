@@ -12,7 +12,7 @@ set laststatus=2
 
 " Plugins
 call plug#begin()
-Plug 'machakann/vim-sandwich'
+Plug 'tpope/vim-surround'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
@@ -69,6 +69,9 @@ nnoremap <C-n> :NERDTreeToggle<cr>
 nnoremap <leader>Lc :e ~/.vimrc<cr>
 nnoremap <leader>Lr :source ~/.vimrc<cr>
 nnoremap <leader>pi :PlugInstall<cr>
+nnoremap <leader>pc :PlugClean<cr>
+nnoremap <leader>pu :PlugUpdate<cr>
+nnoremap <leader>pU :PlugUpgrade<cr>
 
 " swap display line up/down
 nnoremap j gj
@@ -94,7 +97,8 @@ nnoremap <C-H> <C-W><C-H>
 vnoremap <C-a> :s/\d\+/\=(submatch(0)+1)/g<cr>:nohlsearch<cr>
 
 " A shorter way of entering markdown links (select text then press <C-k>)
-vmap <C-k> S[%%a()<Esc>i
+" Only works with vim-surround
+vmap <C-k> S]%a()<Esc>i
 
 " Persistent undo
 let vimDir = '$HOME/.vim'
