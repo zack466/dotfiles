@@ -20,7 +20,6 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'jremmen/vim-ripgrep'
 Plug 'jpalardy/vim-slime'
 Plug 'catppuccin/vim', { 'as': 'catppuccin' }
-Plug 'bling/vim-bufferline'
 Plug 'lifepillar/vim-mucomplete'
 Plug 'airblade/vim-gitgutter'
 call plug#end()
@@ -30,6 +29,22 @@ runtime macros/sandwich/keymap/surround.vim
 let g:slime_target = 'tmux'
 let g:slime_bracketed_paste = 1
 let g:slime_default_config = {"socket_name": "default", "target_pane": ".1"}
+
+" Minimal statusline
+" filename, [modified] ... git status, line/column, filetype
+function! GitStatus()
+  let [a,m,r] = GitGutterGetHunkSummary()
+  return printf('<+%d ~%d -%d>', a, m, r)
+endfunction
+
+set statusline=
+set statusline+=\ %f
+set statusline+=\ %m
+set statusline+=%=
+set statusline+=%{GitStatus()}
+set statusline+=\ :%l:%c:
+set statusline+=\ (%p%%)
+set statusline+=\ %y
 
 " Completion
 let g:mucomplete#enable_auto_at_startup = 1
