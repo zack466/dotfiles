@@ -8,6 +8,7 @@ set lazyredraw
 set smartcase
 set hidden
 set updatetime=100
+set laststatus=2
 
 " Plugins
 call plug#begin()
@@ -96,13 +97,22 @@ vnoremap <C-a> :s/\d\+/\=(submatch(0)+1)/g<cr>:nohlsearch<cr>
 vmap <C-k> S[%%a()<Esc>i
 
 " Persistent undo
+let vimDir = '$HOME/.vim'
+
+if stridx(&runtimepath, expand(vimDir)) == -1
+  " vimDir is not on runtimepath, add it
+    let &runtimepath.=','.vimDir
+endif
+
 if has('persistent_undo')
-	call system('mkdir ~/.vim')
-	call system('mkdir ~/.vim/undo')
-	set undofile
-	set undodir=$HOME/.vim/undo
+    " different undo files for vim and neovim
+    let myUndoDir = expand(vimDir . '/undodir' . (has('nvim') ? 'neo' : ''))
+    call system('mkdir ' . vimDir)
+    call system('mkdir ' . myUndoDir)
+    let &undodir = myUndoDir
 	set undolevels=1000
 	set undoreload=10000
+    set undofile
 endif
 
 " the most important part
