@@ -9,6 +9,7 @@ set smartcase
 set hidden
 set updatetime=100
 set laststatus=2
+set signcolumn=yes
 
 " Plugins
 call plug#begin()
@@ -23,13 +24,20 @@ Plug 'jpalardy/vim-slime'
 Plug 'catppuccin/vim', { 'as': 'catppuccin' }
 Plug 'lifepillar/vim-mucomplete'
 Plug 'airblade/vim-gitgutter'
+Plug 'justinmk/vim-sneak'
 call plug#end()
 
 " Plugin configuration
 runtime macros/sandwich/keymap/surround.vim
+let g:sneak#label = 1
 let g:slime_target = 'tmux'
 let g:slime_bracketed_paste = 1
 let g:slime_default_config = {"socket_name": "default", "target_pane": ".1"}
+let g:ctrlp_custom_ignore = {
+	\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+	\ 'file': '\v\.(exe|so|dll|png|jpg|jpeg|gif|pdf|a|log|aux|cls|out)$',
+	\ }
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 " Minimal statusline
 " filename, [modified] ... git status, line/column, filetype
@@ -72,6 +80,10 @@ nnoremap <leader>pi :PlugInstall<cr>
 nnoremap <leader>pc :PlugClean<cr>
 nnoremap <leader>pu :PlugUpdate<cr>
 nnoremap <leader>pU :PlugUpgrade<cr>
+
+" for typos
+command-bang Q q
+command-bang W w
 
 " swap display line up/down
 nnoremap j gj

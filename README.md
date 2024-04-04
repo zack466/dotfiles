@@ -8,7 +8,7 @@
 
 ## [Neovim](https://neovim.io/) - `.vimrc`, `.config/nvim/init.lua` 
 - extremely minimal config with a few plugins and mappings
-  - vim-sensible, vim-sandwich (with surround.vim mappings), nerdtree (mapped to `<C-n>`), vim-commentary (mapped to `gcc`), and vim-repeat (`.`)
+  - vim-sensible, vim-surround, nerdtree (mapped to `<C-n>`), vim-commentary (mapped to `gcc`), and vim-repeat (`.`)
   - leader key is `<Space>`, save with `<leader>w` and quit with `<leader>q` 
   - persistent undo
 - uses [vim-plug](https://github.com/junegunn/vim-plug) (install manually), then install plugins with `:PlugInstall`
