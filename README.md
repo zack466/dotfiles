@@ -6,14 +6,19 @@
 - uses [tpm](https://github.com/tmux-plugins/tpm) (install manually), plus tmux-sensible and one-dark (install with `<prefix-I>`)
 - when a session ends, will switch to another active session (useful since I tend to have more sessions than terminal windows open)
 
-## [Neovim](https://neovim.io/) - `.vimrc`, `.config/nvim/init.lua` 
-- extremely minimal config with a few plugins and mappings
+## [Neovim](https://neovim.io/) - `.config/nvim/*` 
+- I finally bit the bullet and made my own Neovim config
+- copied quite a bit from [Brady Bhalla](https://github.com/bradybhalla/dotfiles) and [Eric Lee](https://github.com/ericlovesmath/dotfiles)
+- basically a slimmed down version of my previous Lunarvim config merged with my vim config
+
+## [Vim](https://www.vim.org/) - `.vimrc`
+- relatively minimal config with a few plugins and mappings
   - vim-sensible, vim-surround, nerdtree (mapped to `<C-n>`), vim-commentary (mapped to `gcc`), and vim-repeat (`.`)
   - leader key is `<Space>`, save with `<leader>w` and quit with `<leader>q` 
   - persistent undo
 - uses [vim-plug](https://github.com/junegunn/vim-plug) (install manually), then install plugins with `:PlugInstall`
 - `init.lua` simply loads `~/.vimrc`
-- works with vim, neovim, and macvim
+- works with vim and macvim
 
 ## [LunarVim](https://www.lunarvim.org/) - `.config/lvim/`
 - A really great neovim IDE layer (my daily driver)
