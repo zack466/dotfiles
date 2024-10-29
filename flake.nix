@@ -7,16 +7,20 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs: {
-    defaultPackage.aarch64-darwin = home-manager.defaultPackage.aarch64-darwin;
- 
-    homeConfigurations = {
-      "zack4" = inputs.home-manager.lib.homeManagerConfiguration {
-        system = "aarch64-darwin";
-        homeDirectory = "/Users/zack4";
-        username = "zack4";
-        configuration.imports = [ ./home.nix ];
+  outputs = { nixpkgs, home-manager, ... }:
+    let
+      system = "aarch64-darwin";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      homeConfigurations."zack4" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+
+        # Specify your home configuration modules here, for example,
+        # the path to your home.nix.
+        modules = [ ./home.nix ];
+
+        # Optionally use extraSpecialArgs
+        # to pass through arguments to home.nix
       };
     };
-  };
 }

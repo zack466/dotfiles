@@ -3,7 +3,7 @@
 
    home.packages = [
     pkgs.cowsay;
-    pkgs.git;
+    pkgs.git
   ];
 
   programs.git = {
