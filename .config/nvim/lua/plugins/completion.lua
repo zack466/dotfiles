@@ -15,8 +15,9 @@ return {
                     enable_autosnippets = true,
                     update_events = "TextChanged,TextChangedI"
                 })
-                require("luasnip.loaders.from_lua").lazy_load() -- from luasnippets/
-            end
+                require("luasnip.loaders.from_vscode").lazy_load() -- friendly-snippets
+            end,
+            dependencies = { "rafamadriz/friendly-snippets" },
         }
     },
     config = function()
@@ -35,7 +36,7 @@ return {
             },
             sources = cmp.config.sources({
                 { name = "nvim_lsp" },
-                { name = "luasnip" }
+                { name = "luasnip" },
             }, {
                 { name = "buffer" },
             }),

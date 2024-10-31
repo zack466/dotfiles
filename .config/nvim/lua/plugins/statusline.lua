@@ -19,9 +19,10 @@ return {
                 disabled_filetypes = { "NvimTree", "toggleterm", "oil", "neo-tree" },
                 ignore_focus = {
                     "dapui_scopes", "dapui_watches", "dap-repl",
-                    "dapui_console", "dapui_breakpoints", "dapui_stacks"
+                    "dapui_console", "dapui_breakpoints", "dapui_stacks",
                 }
             },
+            extensions = {'nvim-tree'},
             sections = {
                 lualine_a = { "mode" },
                 lualine_b = { "branch", "diff", "diagnostics" },
@@ -39,25 +40,30 @@ return {
                 lualine_z = {}
             },
             tabline = {
+                -- lualine_a = { {
+                --     "tabs",
+                --     mode = 1,
+                --     use_mode_colors = true,
+                --     max_length = vim.o.columns * 4 / 5,
+                --     fmt = function(name, context)
+                --         -- display directory name if in oil.nvim buffer
+                --         local buflist = vim.fn.tabpagebuflist(context.tabnr)
+                --         local winnr = vim.fn.tabpagewinnr(context.tabnr)
+                --         local bufnr = buflist[winnr]
+                --         local ftype = vim.fn.getbufvar(bufnr, '&filetype')
+                --
+                --         if ftype == "oil" then
+                --             return get_oil_winbar()
+                --         else
+                --             return name
+                --         end
+                --     end
+                --
+                -- } },
                 lualine_a = { {
-                    "tabs",
-                    mode = 1,
+                    "buffers",
                     use_mode_colors = true,
                     max_length = vim.o.columns * 4 / 5,
-                    fmt = function(name, context)
-                        -- display directory name if in oil.nvim buffer
-                        local buflist = vim.fn.tabpagebuflist(context.tabnr)
-                        local winnr = vim.fn.tabpagewinnr(context.tabnr)
-                        local bufnr = buflist[winnr]
-                        local ftype = vim.fn.getbufvar(bufnr, '&filetype')
-
-                        if ftype == "oil" then
-                            return get_oil_winbar()
-                        else
-                            return name
-                        end
-                    end
-
                 } },
                 lualine_b = {},
                 lualine_c = {},

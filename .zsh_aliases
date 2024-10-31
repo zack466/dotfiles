@@ -1,0 +1,52 @@
+alias l="ls -CF";
+alias ls="ls --color"
+alias la="ls -lahF";
+alias lg="lazygit";
+alias conda="micromamba";
+alias neofetch="fastfetch -c neofetch";
+alias mp3="yt-dlp -x --audio-format mp3 -o '%(title)s.%(ext)s'";
+alias mp4="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' -o '%(title)s.%(ext)s'";
+alias vs="cd ~/dotfiles; $EDITOR home.nix";
+alias vv="cd ~/dotfiles; $EDITOR .config/nvim";
+alias vy='cd ~/dotfiles; $EDITOR .config/yabai/yabairc'
+alias vh='cd ~/dotfiles; $EDITOR .config/skhd/skhdrc'
+alias vt='cd ~/dotfiles; $EDITOR .tmux.conf'
+alias vw='cd ~/dotfiles; $EDITOR .config/wezterm/wezterm.lua'
+alias v=gvim
+alias copy='pbcopy' # macos
+alias paste='pbpaste' # macos
+alias ip="curl -4 icanhazip.com"
+alias localip="ipconfig getifaddr en0"
+alias m="[ -f Makefile ] && rg '^([a-zA-Z0-9_-]+):.*' Makefile -r '\$1' -N | fzf | xargs make"
+alias aaaa="mpv ~/.local/assets/aaaa.mp3 &> /dev/null &"
+alias bruh="mpv ~/.local/assets/bruh.mp3 &> /dev/null &"
+alias ohio="mpv ~/.local/assets/ohio.mp3 &> /dev/null &"
+alias swag="mpv ~/.local/assets/swag.mp3 &> /dev/null &"
+alias boom="mpv ~/.local/assets/boom.mp3 &> /dev/null &"
+alias canon="mpv ~/.local/assets/canon.mp3 &> /dev/null &"
+alias slap="mpv ~/.local/assets/slap.mp3 &> /dev/null &"
+alias wt=wezterm
+alias code="open -a 'Visual Studio Code'"
+alias sbcl="rlwrap sbcl"
+alias hm=home-manager
+
+notif() {
+	osascript -e "display notification \"$1\" sound name \"Ping\""
+}
+timezsh() { repeat 10 { time zsh -i -c exit } }
+
+# ex: pdfpages source.pdf 2-5 output.pdf
+pdfpages() {
+	pdftk $1 cat $2 output $3
+}
+
+# cd to any directory starting at $HOME
+# does not include ~/Library/
+sd(){
+  
+  dir=$(rg --hidden --files --null -g '!Library/' ${HOME} 2>/dev/null | xargs -0 dirname 2>/dev/null | awk '!x[$0]++' | fzf --height 10 --query "/$1")
+  
+  if [ ! -z "$dir" ]; then
+    cd $dir
+  fi
+}

@@ -43,15 +43,16 @@ shift + alt - 0 : yabai -m space --balance
 # hyper - d : [[ $(yabai -m query --spaces --space | jq '.index' ) != $(yabai -m query --displays --display | jq '.spaces[-1]') ]] && ( yabai -m window --space next; yabai -m space --focus next )
 ctrl + shift + alt - p : yabai -m window --space prev || yabai -m window --space last; yabai -m space --focus prev || yabai -m space --focus last
 ctrl + shift + alt - n : yabai -m window --space next || yabai -m window --space first; yabai -m space --focus next || yabai -m space --focus first
-shift + alt - 1 : yabai -m window --space 1; yabai -m space --focus 1
-shift + alt - 2 : yabai -m window --space 2; yabai -m space --focus 2
-shift + alt - 3 : yabai -m window --space 3; yabai -m space --focus 3
-shift + alt - 4 : yabai -m window --space 4; yabai -m space --focus 4
-shift + alt - 5 : yabai -m window --space 5; yabai -m space --focus 5
-shift + alt - 6 : yabai -m window --space 6; yabai -m space --focus 6
-shift + alt - 7 : yabai -m window --space 7; yabai -m space --focus 7
-shift + alt - 8 : yabai -m window --space 8; yabai -m space --focus 8
-shift + alt - 9 : yabai -m window --space 9; yabai -m space --focus 9
+shift + alt - 1 : yabai -m window --space 1 --focus
+shift + alt - 2 : yabai -m window --space 2 --focus
+shift + alt - 3 : yabai -m window --space 3 --focus
+shift + alt - 4 : yabai -m window --space 4 --focus
+shift + alt - 5 : yabai -m window --space 5 --focus
+shift + alt - 6 : yabai -m window --space 6 --focus
+shift + alt - 7 : yabai -m window --space 7 --focus
+shift + alt - 8 : yabai -m window --space 8 --focus
+shift + alt - 9 : yabai -m window --space 9 --focus
+shift + alt - 0 : yabai -m window --space 10 --focus
 
 # Move focus container to workspace
 # Only move focus to prev/next if in current display
@@ -72,6 +73,7 @@ ctrl - 6 : yabai -m space --focus 6
 ctrl - 7 : yabai -m space --focus 7
 ctrl - 8 : yabai -m space --focus 8
 ctrl - 9 : yabai -m space --focus 9
+ctrl - 0 : yabai -m space --focus 10
 
 # focus monitor
 shift + alt - w  : yabai -m display --focus prev
@@ -125,13 +127,9 @@ alt - j : yabai -m query --spaces --space \
   | xargs -I{} yabai -m window --focus {}
 
 # opens terminal
-ctrl - return : wezterm start -- tmux
+ctrl - return : /opt/local/bin/wezterm start -- tmux
 
-# Navigate browser tabs
-#meh - q : skhd -k "ctrl + shift - tab"
-#hyper - q : skhd -k "ctrl + shift - pageup"
-#meh - e : skhd -k "ctrl - tab"
-#hyper - e : skhd -k "ctrl + shift - pagedown"
+ctrl + shift - return : /opt/local/bin/wezterm start -- zsh
 
 # Toggles floating window
 shift + alt - u : yabai -m window --toggle float; \
@@ -141,9 +139,8 @@ shift + alt - i : yabai -m window --toggle float; \
         yabai -m window --resize abs:770:600
 
 
-shift + alt - c : /Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox
-shift + alt - m : wezterm start -- ssh -t zwhuang@labradoodle.caltech.edu 'tmux new-session -A -s default'
-shift + ctrl + alt - c : /Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox --args -private-window
-
-#shift + alt - p : yabai -m window --toggle sticky;\
-          #yabai -m window --toggle topmost
+# shift + alt - c : open -na "Google Chrome" --args --new-window "https://google.com"
+shift + alt - m : wezterm start -- ssh -L 8888:localhost:8888 -t zwhuang@mario.caltech.edu 'tmux new-session -A -s default'
+shift + alt - o : wezterm start -- ssh -t ugcs 'tmux new-session -A -s default'
+shift + ctrl + alt - c : open -na "Firefox Nightly" --args -private-window
+ctrl + alt - c : open -na "Firefox Nightly"
