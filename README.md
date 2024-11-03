@@ -1,5 +1,10 @@
 # Zack's Dotfiles
 
+## [Nix](Nix) - `*.nix`
+- I am officially using Nix flakes and [home-manager](home-manager) on my macbook so I can define all of my development dependencies in a single place (and make it easier to re-install my dotfiles on new systems)
+- To install software system-wide, I just need to modify `home.nix` and run `make update` (which calls into home-manager)
+- Most of my shell configuration is now specified in Nix, while everything else gets symlinked into my home directory by Nix
+
 ## [tmux](https://github.com/tmux/tmux/wiki) - `.tmux.conf`
 - super basic tmux config
 - prefix key: \`
