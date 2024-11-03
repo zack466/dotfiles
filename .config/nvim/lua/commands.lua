@@ -41,6 +41,24 @@ local commands = {
         }):toggle()
     end,
 
+    ExecuteMake = function()
+        local dir = vim.fn.expand("%:h")
+        if vim.fn.isdirectory(dir) == 0 then
+            dir = "."
+        end
+        require("toggleterm.terminal").Terminal:new({
+            cmd = "make",
+            hidden = true,
+            close_on_exit = false,
+            direction = "float",
+            dir = dir,
+            on_open = function(_)
+                vim.cmd "startinsert!"
+            end,
+            count = 10
+        }):toggle()
+    end,
+
     Terminal = function()
         local dir = vim.fn.expand("%:h")
         if vim.fn.isdirectory(dir) == 0 then

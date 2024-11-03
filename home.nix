@@ -22,7 +22,7 @@
     tree wget croc curl rlwrap 
     pandoc yt-dlp fastfetch
     ripgrep fd fzf lazygit jq
-    skhd yabai
+    wezterm skhd yabai
     micromamba
   ];
 
@@ -50,6 +50,25 @@
     enableZshIntegration = true;
   };
 
+  programs.nnn = {
+    enable = true;
+    plugins = {
+      src = (pkgs.fetchFromGitHub {
+          owner = "jarun";
+          repo = "nnn";
+          rev = "v4.0";
+          sha256 = "sha256-Hpc8YaJeAzJoEi7aJ6DntH2VLkoR6ToP6tPYn3llR7k=";
+          }) + "/plugins";
+      mappings = {
+        k = "chksum";
+        f = "fzcd";
+        z = "autojump";
+        n = "!open .";
+        g = "!lazygit";
+      };
+    };
+  };
+
   programs.zsh = {
     enable = true;
     defaultKeymap = "emacs";
@@ -58,7 +77,6 @@
       dl    = "$HOME/Downloads";
       term  = "$HOME/Caltech/FA25";
     };
-    autocd = true;
     autosuggestion = {
       enable = true;
       highlight = "fg=#d1d1d1,bold,underline";
@@ -80,6 +98,12 @@
 
   programs.starship = {
     enable = true;
+    settings = {
+      command_timeout = 1000;
+      env_var.NNNLVL = {
+        format = "(on [floor $env_value ](yellow))";
+      };
+    };
   };
 
   programs.zoxide = {

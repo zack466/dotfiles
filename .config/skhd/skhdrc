@@ -142,5 +142,5 @@ shift + alt - i : yabai -m window --toggle float; \
 # shift + alt - c : open -na "Google Chrome" --args --new-window "https://google.com"
 shift + alt - m : wezterm start -- ssh -L 8888:localhost:8888 -t zwhuang@mario.caltech.edu 'tmux new-session -A -s default'
 shift + alt - o : wezterm start -- ssh -t ugcs 'tmux new-session -A -s default'
-shift + ctrl + alt - c : open -na "Firefox Nightly" --args -private-window
-ctrl + alt - c : open -na "Firefox Nightly"
+shift + ctrl + alt - c : open -na "Firefox Developer Edition" --args -private-window
+ctrl + alt - c : open -na "Firefox Develeoper Edition"

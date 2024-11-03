@@ -24,4 +24,6 @@ config.default_prog = { '/opt/local/bin/tmux', 'new-session', '-A', '-s', 'wezte
 
 config.audible_bell = "Disabled"
 
+config.front_end = "WebGpu"
+
 return config
