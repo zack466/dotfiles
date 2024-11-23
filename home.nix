@@ -37,10 +37,6 @@
     enableZshIntegration = true;
   };
 
-  home.sessionVariables = {
-    EDITOR = "nvim";
-  };
-
   home.sessionPath = [
     "$HOME/.local/bin"
   ];
@@ -77,6 +73,10 @@
       dl    = "$HOME/Downloads";
       term  = "$HOME/Caltech/FA25";
     };
+    sessionVariables = {
+      EDITOR = "nvim";
+      MAMBA_ROOT_PREFIX = "$HOME/micromamba";
+    };
     autosuggestion = {
       enable = true;
       highlight = "fg=#d1d1d1,bold,underline";
@@ -89,10 +89,11 @@
     completionInit = ''
       bindkey '^ ' autosuggest-accept
     '';
-    # aliases and nix-index
+    # aliases and stuff
     initExtra = ''
+      eval $(opam env)
+      eval "$(micromamba shell hook --shell zsh)"
       source $HOME/.zsh_aliases
-      source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
     '';
   };
 

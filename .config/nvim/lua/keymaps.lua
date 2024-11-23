@@ -53,7 +53,7 @@ require("which-key").add({
         { "<leader>w",        "<CMD>w<CR>",                                desc = "save" },
         { "<leader>h",        "<CMD>nohl<CR>",                             desc = "no highlight" },
         -- { "<C-n>",            "<CMD>NvimTreeToggle<CR>",                   desc = "toggle filetree" },
-        { "<C-n>",            "<CMD>NnnExplorer<CR>",                   desc = "toggle filetree", mode = {"t", "n"} },
+        { "<C-n>",            "<CMD>NnnPicker<CR>",                   desc = "toggle file explorer", mode = {"t", "n"} },
         { "<leader>c",        "<CMD>Bdelete<CR>",                          desc = "close buffer" },
         { "<leader>,",        "<CMD>bprev<CR>",                            desc = "prev buffer" },
         { "<leader>.",        "<CMD>bnext<CR>",                            desc = "next buffer" },
