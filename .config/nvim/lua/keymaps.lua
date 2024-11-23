@@ -72,6 +72,7 @@ require("which-key").add({
         -- git
         { "<leader>g",  group = "git" },
         { "<leader>gg", "<CMD>Lazygit<CR>", desc = "lazygit" },
+        { "<leader>gn", "<CMD>Neogit<CR>", desc = "neogit" },
     },
 
     {
