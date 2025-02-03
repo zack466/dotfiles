@@ -53,17 +53,18 @@ require("which-key").add({
         { "<leader>w",        "<CMD>w<CR>",                                desc = "save" },
         { "<leader>h",        "<CMD>nohl<CR>",                             desc = "no highlight" },
         -- { "<C-n>",            "<CMD>NvimTreeToggle<CR>",                   desc = "toggle filetree" },
-        { "<C-n>",            "<CMD>NnnPicker<CR>",                   desc = "toggle file explorer", mode = {"t", "n"} },
+        { "<C-n>",            "<CMD>NnnPicker %:p:h<CR>",                  desc = "toggle file explorer", mode = { "t", "n" } },
         { "<leader>c",        "<CMD>Bdelete<CR>",                          desc = "close buffer" },
         { "<leader>,",        "<CMD>bprev<CR>",                            desc = "prev buffer" },
         { "<leader>.",        "<CMD>bnext<CR>",                            desc = "next buffer" },
         { "<leader><leader>", "<CMD>Telescope find_files hidden=true<CR>", desc = "find file" },
-        { "<leader>n",        "<CMD>OpenFinder<CR>",                       desc = "open finder" },
+        { "<leader>n",        "<CMD>NnnPicker<CR>",                        desc = "open file directory",  mode = { "n" } },
+        { "<leader>N",        "<CMD>OpenFinder<CR>",                       desc = "open finder" },
         { "<leader>S",        "<CMD>ToggleSpell<CR>",                      desc = "toggle spellcheck" },
         -- { "<leader>n",        "<CMD>tabnew<CR>",                           desc = "new tab" },
         -- { "<leader>[",        "<CMD>tabprevious<CR>",                      desc = "prev tab" },
         -- { "<leader>]",        "<CMD>tabnext<CR>",                          desc = "next tab" },
-        { "<leader>m",        "<CMD>ExecuteMake<CR>",                             desc = "make" },
+        { "<leader>m",        "<CMD>ExecuteMake<CR>",                      desc = "make" },
         { "gd",               vim.lsp.buf.definition,                      desc = "go to definition" },
         { "gD",               vim.lsp.buf.declaration,                     desc = "go to definition" },
     },
@@ -71,8 +72,8 @@ require("which-key").add({
     {
         -- git
         { "<leader>g",  group = "git" },
-        { "<leader>gg", "<CMD>Lazygit<CR>", desc = "lazygit" },
-        { "<leader>gn", "<CMD>Neogit<CR>", desc = "neogit" },
+        { "<leader>gg", "<CMD>Lazygit<CR>",                                           desc = "lazygit" },
+        { "<leader>gn", "<CMD>lua require('neogit').open({ kind = 'floating' })<CR>", desc = "neogit" },
     },
 
     {
@@ -95,10 +96,10 @@ require("which-key").add({
 
     },
 
-    {
-        -- oil.nvim
-        { "-", "<CMD>Oil<CR>", desc = "Open parent directory", mode = { "n" } },
-    },
+    -- {
+    --     -- oil.nvim
+    --     { "-", "<CMD>Oil<CR>", desc = "Open parent directory", mode = { "n" } },
+    -- },
 
 
     {

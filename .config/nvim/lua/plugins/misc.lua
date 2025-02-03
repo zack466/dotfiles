@@ -42,12 +42,27 @@ return {
     {
         "NeogitOrg/neogit",
         dependencies = {
-            "nvim-lua/plenary.nvim",      -- required
-            "sindrets/diffview.nvim",     -- optional - Diff integration
+            "nvim-lua/plenary.nvim",  -- required
+            "sindrets/diffview.nvim", -- optional - Diff integration
 
             -- Only one of these is needed.
-            "nvim-telescope/telescope.nvim",     -- optional
+            "nvim-telescope/telescope.nvim", -- optional
         },
         config = true
     },
+    {
+        'whonore/Coqtail',
+        config = function()
+            vim.cmd [[
+                let g:coqtail_nomap = 1
+
+                imap <buffer> <S-Down> <Plug>CoqNext
+                imap <buffer> <S-Left> <Plug>CoqToLine
+                imap <buffer> <S-Up> <Plug>CoqUndo
+                nmap <buffer> <S-Down> <Plug>CoqNext
+                nmap <buffer> <S-Left> <Plug>CoqToLine
+                nmap <buffer> <S-Up> <Plug>CoqUndo
+            ]]
+        end
+    }
 }

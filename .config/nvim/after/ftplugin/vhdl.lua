@@ -1,1 +1,4 @@
-vim.opt.commentstring = "-- %s"
+vim.cmd[[
+setlocal fo-=t fo+=croqlm1
+setlocal comments=:--
+]]

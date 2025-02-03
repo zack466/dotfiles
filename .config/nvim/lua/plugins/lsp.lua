@@ -18,10 +18,10 @@ return {
 
             local nvim_lsp = require("lspconfig")
 
-            -- local capabilities = require("cmp_nvim_lsp").default_capabilities()
-            -- capabilities.textDocument.completion.completionItem.snippetSupport = true
+            local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-            -- vim.diagnostic.config({ virtual_text = false })
+            vim.diagnostic.config({ virtual_text = false })
 
             -- Mason.nvim config
             require("mason").setup()
@@ -30,6 +30,14 @@ return {
                 function(server_name)
                     nvim_lsp[server_name].setup({})
                 end,
+                ["tinymist"] = function()
+                    nvim_lsp.tinymist.setup({
+                        settings = {
+                            formatterMode = "typstyle",
+                            exportPdf = "onSave",
+                        }
+                    })
+                end
                 --     ["html"] = function()
                 --         nvim_lsp.html.setup({ capabilities = capabilities })
                 --     end,
