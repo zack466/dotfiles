@@ -20,7 +20,7 @@ config.font_size = 14.0
 
 config.window_decorations = "RESIZE"
 
-config.default_prog = { '/opt/local/bin/tmux', 'new-session', '-A', '-s', 'wezterm' }
+config.default_prog = { '/Users/zack4/.nix-profile/bin/tmux', 'new-session', '-A', '-s', 'wezterm' }
 
 config.audible_bell = "Disabled"
 

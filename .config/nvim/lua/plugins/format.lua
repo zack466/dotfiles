@@ -10,7 +10,7 @@ return {
             {
                 ft = { "javascript", "typescript",
                     "javascriptreact", "typescriptreact" },
-                fmt = { { "prettierd", "prettier" }, "eslint_d" }
+                fmt = { "prettierd", "prettier", "eslint_d" }
             },
         }
 

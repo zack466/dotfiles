@@ -127,9 +127,9 @@ alt - j : yabai -m query --spaces --space \
   | xargs -I{} yabai -m window --focus {}
 
 # opens terminal
-ctrl - return : /opt/local/bin/wezterm start -- tmux
+ctrl - return : /Applications/WezTerm.app/Contents/MacOS/wezterm start -- tmux
 
-ctrl + shift - return : /opt/local/bin/wezterm start -- zsh
+ctrl + shift - return : /Applications/WezTerm.app/Contents/MacOS/wezterm start -- zsh
 
 # Toggles floating window
 shift + alt - u : yabai -m window --toggle float; \

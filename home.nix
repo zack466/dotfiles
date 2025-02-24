@@ -23,18 +23,20 @@
     pandoc yt-dlp fastfetch
     ripgrep fd fzf lazygit jq
     wezterm skhd yabai
-    micromamba
+    micromamba deno nodejs
+    roswell coq julia-bin
+    typst opam
+    # (pkgs.libqalculate.override { gnuplot = (pkgs.gnuplot.override { withWxGTK = true; }); })
+    cmatrix exiftool binwalk
+    mpv-unwrapped yt-dlp
+    speedtest-cli
+    wezterm
   ];
 
   programs.git = {
     enable = true;
     userName = "Zachary Huang";
     userEmail = "55601738+zack466@users.noreply.github.com";
-  };
-
-  programs.nix-index = {
-    enable = true;
-    enableZshIntegration = true;
   };
 
   home.sessionPath = [
@@ -71,7 +73,7 @@
     dirHashes = {
       docs  = "$HOME/Documents";
       dl    = "$HOME/Downloads";
-      term  = "$HOME/Caltech/FA25";
+      term  = "$HOME/Caltech/SP25";
     };
     sessionVariables = {
       EDITOR = "nvim";
