@@ -13,6 +13,7 @@
     ".config/skhd/skhdrc".source = ./.config/skhd/skhdrc;
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
     ".config/wezterm/wezterm.lua".source = ./.config/wezterm/wezterm.lua;
+    ".config/git/config.inc".source = ./.config/git/config.inc;
   };
 
    home.packages = with pkgs; [
@@ -37,6 +38,7 @@
     enable = true;
     userName = "Zachary Huang";
     userEmail = "55601738+zack466@users.noreply.github.com";
+    includes = [ { path = "~/.config/git/config.inc"; } ];
   };
 
   home.sessionPath = [
