@@ -42,7 +42,8 @@ return {
                 { name = "buffer" },
             }),
             performance = {
-                max_view_entries = 20
+                -- don't forget to set pumheight otherwise all entries will show
+                max_view_entries = 30
             },
             completion = {
                 keyword_length = 2
