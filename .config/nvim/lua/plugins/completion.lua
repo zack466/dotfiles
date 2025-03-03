@@ -16,6 +16,7 @@ return {
                     update_events = "TextChanged,TextChangedI"
                 })
                 require("luasnip.loaders.from_vscode").lazy_load() -- friendly-snippets
+                require("luasnip.loaders.from_lua").lazy_load() -- from luasnippets/
             end,
             dependencies = { "rafamadriz/friendly-snippets" },
         }
@@ -41,7 +42,7 @@ return {
                 { name = "buffer" },
             }),
             performance = {
-                max_view_entries = 10
+                max_view_entries = 20
             },
             completion = {
                 keyword_length = 2
