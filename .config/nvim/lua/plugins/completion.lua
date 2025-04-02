@@ -16,7 +16,7 @@ return {
                     update_events = "TextChanged,TextChangedI"
                 })
                 require("luasnip.loaders.from_vscode").lazy_load() -- friendly-snippets
-                require("luasnip.loaders.from_lua").lazy_load() -- from luasnippets/
+                require("luasnip.loaders.from_lua").lazy_load()    -- from luasnippets/
             end,
             dependencies = { "rafamadriz/friendly-snippets" },
         }
@@ -36,6 +36,7 @@ return {
                 ["<C-p>"] = cmp.mapping.select_prev_item(),
             },
             sources = cmp.config.sources({
+                { name = "codecompanion" },
                 { name = "nvim_lsp" },
                 { name = "luasnip" },
             }, {

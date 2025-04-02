@@ -55,6 +55,7 @@ yabai -m config window_gap                   16
 # manage windows based on the app
 yabai -m rule --add label="Firefox" app="Firefox" manage=on
 yabai -m rule --add title='Preferences$' manage=off
+yabai -m rule --add title='^python$' manage=off
 yabai -m rule --add title='System Settings$' manage=off
 yabai -m rule --add app="^Messages$" manage=off
 yabai -m rule --add title="^About This Mac$" manage=off

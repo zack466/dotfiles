@@ -77,7 +77,7 @@ return {
             -- LSPs not installed with mason.nvim
             -- nvim_lsp.gdscript.setup({})
             -- nvim_lsp.hls.setup({})
-            -- nvim_lsp.ocamllsp.setup({})
+            nvim_lsp.ocamllsp.setup({})
 
             -- vim.api.nvim_create_autocmd("LspAttach", {
             --     group = vim.api.nvim_create_augroup("LspKeybinds", {}),
