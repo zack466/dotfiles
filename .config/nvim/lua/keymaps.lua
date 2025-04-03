@@ -204,6 +204,31 @@ require("which-key").add({
         },
     },
 
+    {
+        { "<leader>i", group = "AI" },
+        {
+            "<leader>ic",
+            "<cmd>CodeCompanionChat Toggle<cr>",
+            desc = "Toggle Chat",
+        },
+        {
+            "<leader>ii",
+            ":CodeCompanion @editor #buffer ",
+            desc = "Inline Prompt",
+        },
+        {
+            "<leader>ip",
+            "<cmd>CodeCompanionActions<cr>",
+            desc = "Inline Prompt",
+        },
+        {
+            "<leader>i",
+            ":CodeCompanion @editor ",
+            desc = "Visual prompt",
+            mode = "v"
+        },
+    },
+
     -- {
     --     -- debugger
     --     { "<leader>d",  group = "debugger" },
