@@ -42,6 +42,12 @@ vim.opt.showmode     = false
 -- use system clipboard
 vim.opt.clipboard:append({ 'unnamedplus' })
 
+-- get rid of annoying ctrl-space behavior
+vim.cmd [[
+inoremap <C-Space> <ESC>
+nnoremap <C-Space> <CMD>w<CR>
+]]
+
 -- nvim-tree says to do this
 vim.g.loaded_netrw       = 1
 vim.g.loaded_netrwPlugin = 1

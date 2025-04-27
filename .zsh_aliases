@@ -30,6 +30,7 @@ alias wt=wezterm
 alias code="open -a 'Visual Studio Code'"
 alias sbcl="rlwrap sbcl"
 alias hm=home-manager
+alias charge="system_profiler SPPowerDataType | grep -A3 -B7 'Condition'"
 
 notif() {
 	osascript -e "display notification \"$1\" sound name \"Ping\""
