@@ -26,12 +26,15 @@
     wezterm skhd yabai
     micromamba deno nodejs
     roswell coq julia-bin
-    typst opam
+    typst #opam
     # (pkgs.libqalculate.override { gnuplot = (pkgs.gnuplot.override { withWxGTK = true; }); })
     cmatrix exiftool binwalk
-    mpv-unwrapped yt-dlp
-    speedtest-cli
+    mpv-unwrapped yt-dlp speedtest-cli
+    hyperfine
     wezterm
+    podman podman-compose
+    gtkwave
+    ffmpeg
   ];
 
   programs.git = {
@@ -95,6 +98,7 @@
     '';
     # aliases and stuff
     initExtra = ''
+      export PATH="$PATH:$HOME/.local/bin"
       eval $(opam env)
       eval "$(micromamba shell hook --shell zsh)"
       source $HOME/.zsh_aliases
