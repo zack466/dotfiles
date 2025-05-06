@@ -17,7 +17,7 @@
 - basically a slimmed down version of my previous Lunarvim config merged with my vim config
 
 ## [Vim](https://www.vim.org/) - `.vimrc`
-- relatively minimal config with a few plugins and mappings
+- relatively minimal config with a few plugins and mappings, used when I can't be bothered to set up all my neovim stuff
   - vim-sensible, vim-surround, nerdtree (mapped to `<C-n>`), vim-commentary (mapped to `gcc`), and vim-repeat (`.`)
   - leader key is `<Space>`, save with `<leader>w` and quit with `<leader>q` 
   - persistent undo
@@ -26,7 +26,7 @@
 - works with vim and macvim
 
 ## [LunarVim](https://www.lunarvim.org/) - `.config/lvim/`
-- A really great neovim IDE layer (my daily driver)
+- A really great neovim IDE layer ~~(my daily driver)~~
 - main config file is `config.lua`, with additional modules in `lua/user`
 
 ## [zsh](https://zsh.sourceforge.io/) - `.zshrc`
@@ -38,14 +38,14 @@
 - `m` to select a makefile target using [fzf](https://github.com/junegunn/fzf)
 
 ## [Yabai](https://github.com/koekeishiya/yabai) - `.config/yabai/yabairc`, `.config/skhd/skhdrc`
-- I have it installed with macports
+- I have it installed with ~~macports~~ nix
 - Bindings are controlled using skhd (see `skhdrc`)
   - I used [Amethyst](https://ianyh.com/amethyst/) before switching to yabai, so my bindings tend to use shift-alt and shift-ctrl-alt as prefixes
 - Note that if you're installing this for the first time, you have to go through a slightly convoluted procedure to [disable SIP](https://github.com/koekeishiya/yabai/wiki/Disabling-System-Integrity-Protection) so that everything works properly
 - Credit where credit's due: I stole most of this config from [ericlovesmath](https://github.com/ericlovesmath/dotfiles)
 
 ## [Wezterm](https://wezfurlong.org/wezterm/) - `.config/wezterm/wezterm.lua`
-- installed using macports
+- installed using ~~macports~~ nix
 - I quite like the lua-based configuration
 - I switched from Alacritty because... why not? Just wanted to change things up
 
