@@ -17,6 +17,7 @@ return {
                 })
                 require("luasnip.loaders.from_vscode").lazy_load() -- friendly-snippets
                 require("luasnip.loaders.from_lua").lazy_load()    -- from luasnippets/
+
             end,
             dependencies = { "rafamadriz/friendly-snippets" },
         }

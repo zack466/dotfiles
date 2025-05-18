@@ -83,3 +83,6 @@ n ()
         rm -f -- "$NNN_TMPFILE" > /dev/null
     }
 }
+
+## ghdl (used for ghdl lsp)
+export GHDL=/opt/local/bin/ghdl

@@ -150,6 +150,7 @@ require("which-key").add({
     {
         -- lsp
         { "<leader>l",  group = "lsp" },
+        { "<leader>ll", "<CMD>Mason<CR>",                                   desc = "info" },
         { "<leader>lI", "<CMD>LspInfo<CR>",                                 desc = "info" },
         { "<leader>ls", "<CMD>Telescope lsp_document_symbols<CR>",          desc = "document symbols" },
         { "<leader>lS", "<CMD>Telescope lsp_dynamic_workspace_symbols<CR>", desc = "workspace symbols" },
@@ -163,8 +164,6 @@ require("which-key").add({
         { "<leader>ln", vim.lsp.buf.rename,                                 desc = "rename" },
         { "<leader>la", vim.lsp.buf.code_action,                            desc = "code action" },
         { "<leader>e",  vim.diagnostic.open_float,                          desc = "open float" },
-        { "<leader>lp", vim.diagnostic.goto_prev,                           desc = "goto prev" },
-        { "<leader>ln", vim.diagnostic.goto_next,                           desc = "goto next" },
         { "<leader>lf", "<CMD>FormatBuffer<CR>",                            desc = "format" },
         { "<C-l>",      vim.lsp.buf.signature_help,                         mode = "i" },
 

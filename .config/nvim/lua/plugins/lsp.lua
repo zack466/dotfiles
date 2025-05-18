@@ -81,6 +81,11 @@ return {
             -- nvim_lsp.hls.setup({})
             nvim_lsp.ocamllsp.setup({})
 
+            -- This is absolutely cooked
+            nvim_lsp.ghdl_ls.setup({
+                cmd = { "/Users/zack4/micromamba/bin/ghdl-ls" }
+            })
+
             -- vim.api.nvim_create_autocmd("LspAttach", {
             --     group = vim.api.nvim_create_augroup("LspKeybinds", {}),
             --     callback = function(args)
