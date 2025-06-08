@@ -6,7 +6,7 @@ return {
   -- "beg" expands to "begin ... end"
 snip("beg", [[
 begin
-{}
+    {}
 end]], { i(1) })
 }
 
