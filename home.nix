@@ -3,7 +3,8 @@
 
   home.username = "zack4";
   home.homeDirectory = "/Users/zack4";
-  home.stateVersion = "24.05";
+  home.stateVersion = "25.05";
+  home.enableNixpkgsReleaseCheck = false;
 
   # config files not specified in nix
   home.file = {
@@ -35,6 +36,7 @@
     podman podman-compose
     gtkwave
     ffmpeg
+    texliveTeTeX
   ];
 
   programs.git = {
@@ -97,7 +99,7 @@
       bindkey '^ ' autosuggest-accept
     '';
     # aliases and stuff
-    initExtra = ''
+    initContent = ''
       export PATH="$PATH:$HOME/.local/bin"
       eval $(opam env)
       eval "$(micromamba shell hook --shell zsh)"
