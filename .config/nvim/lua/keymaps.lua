@@ -72,8 +72,9 @@ require("which-key").add({
     {
         -- git
         { "<leader>g",  group = "git" },
-        { "<leader>gg", "<CMD>Lazygit<CR>",                                           desc = "lazygit" },
-        { "<leader>gn", "<CMD>lua require('neogit').open({ kind = 'floating' })<CR>", desc = "neogit" },
+        -- { "<leader>gg", "<CMD>Lazygit<CR>",                                           desc = "lazygit" },
+        -- gonna try to start using neogit, let's see how this goes!
+        { "<leader>gg", "<CMD>lua require('neogit').open({ kind = 'floating' })<CR>", desc = "neogit" },
     },
 
     {
@@ -200,31 +201,6 @@ require("which-key").add({
             "<leader>tQ",
             "<cmd>Trouble qflist toggle<cr>",
             desc = "Quickfix List (Trouble)",
-        },
-    },
-
-    {
-        { "<leader>i", group = "AI" },
-        {
-            "<leader>ic",
-            "<cmd>CodeCompanionChat Toggle<cr>",
-            desc = "Toggle Chat",
-        },
-        {
-            "<leader>ii",
-            ":CodeCompanion @editor #buffer ",
-            desc = "Inline Prompt",
-        },
-        {
-            "<leader>ip",
-            "<cmd>CodeCompanionActions<cr>",
-            desc = "Inline Prompt",
-        },
-        {
-            "<leader>i",
-            ":CodeCompanion @editor ",
-            desc = "Visual prompt",
-            mode = "v"
         },
     },
 
