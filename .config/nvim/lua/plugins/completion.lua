@@ -17,7 +17,6 @@ return {
                 })
                 require("luasnip.loaders.from_vscode").lazy_load() -- friendly-snippets
                 require("luasnip.loaders.from_lua").lazy_load()    -- from luasnippets/
-
             end,
             dependencies = { "rafamadriz/friendly-snippets" },
         }
@@ -37,16 +36,21 @@ return {
                 ["<C-p>"] = cmp.mapping.select_prev_item(),
             },
             sources = cmp.config.sources({
-                { name = "codecompanion" },
                 { name = "nvim_lsp" },
                 { name = "luasnip" },
             }, {
                 { name = "buffer" },
             }),
             performance = {
-                -- don't forget to set pumheight otherwise all entries will show
-                max_view_entries = 30
+                debounce = 60,
+                throttle = 30,
+                fetching_timeout = 500,
+                filtering_context_budget = 3,
+                confirm_resolve_timeout = 80,
+                async_budget = 1,
+                max_view_entries = 200, -- don't forget to set pumheight so not all of these get shown
             },
+
             completion = {
                 keyword_length = 2
             }
