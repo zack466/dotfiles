@@ -25,10 +25,6 @@
 - `init.lua` simply loads `~/.vimrc`
 - works with vim and macvim
 
-## [LunarVim](https://www.lunarvim.org/) - `.config/lvim/`
-- A really great neovim IDE layer ~~(my daily driver)~~
-- main config file is `config.lua`, with additional modules in `lua/user`
-
 ## [zsh](https://zsh.sourceforge.io/) - `.zshrc`
 - many random aliases and stuff, plus configuration for various programs
 - uses the [starship](https://starship.rs/) prompt
