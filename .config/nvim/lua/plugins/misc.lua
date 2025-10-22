@@ -6,7 +6,7 @@ return {
 
             local Rule = require("nvim-autopairs.rule")
             local autopairs = require("nvim-autopairs")
-            autopairs.add_rule(Rule("$", "$", { "tex" }))
+            autopairs.add_rule(Rule("$", "$", { "tex", "typst" }))
         end
     },
     { "tpope/vim-surround" },
@@ -50,19 +50,19 @@ return {
         },
         config = true
     },
-    {
-        'whonore/Coqtail',
-        config = function()
-            vim.cmd [[
-                let g:coqtail_nomap = 1
-
-                imap <buffer> <S-Down> <Plug>CoqNext
-                imap <buffer> <S-Left> <Plug>CoqToLine
-                imap <buffer> <S-Up> <Plug>CoqUndo
-                nmap <buffer> <S-Down> <Plug>CoqNext
-                nmap <buffer> <S-Left> <Plug>CoqToLine
-                nmap <buffer> <S-Up> <Plug>CoqUndo
-            ]]
-        end
-    }
+    -- {
+    --     'whonore/Coqtail',
+    --     config = function()
+    --         vim.cmd [[
+    --             let g:coqtail_nomap = 1
+    --
+    --             imap <buffer> <S-Down> <Plug>CoqNext
+    --             imap <buffer> <S-Left> <Plug>CoqToLine
+    --             imap <buffer> <S-Up> <Plug>CoqUndo
+    --             nmap <buffer> <S-Down> <Plug>CoqNext
+    --             nmap <buffer> <S-Left> <Plug>CoqToLine
+    --             nmap <buffer> <S-Up> <Plug>CoqUndo
+    --         ]]
+    --     end
+    -- }
 }

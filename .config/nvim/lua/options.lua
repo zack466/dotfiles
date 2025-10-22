@@ -1,19 +1,20 @@
 -- set leader key
-vim.g.mapleader     = " "
+vim.g.mapleader        = " "
 
 -- line numbers
-vim.opt.number      = true
-vim.opt.signcolumn  = "yes"
+vim.opt.number         = true
+vim.opt.relativenumber = true
+vim.opt.signcolumn     = "yes"
 
 -- tabs
-vim.opt.tabstop     = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth  = 4
-vim.opt.expandtab   = true
+vim.opt.tabstop        = 4
+vim.opt.softtabstop    = 4
+vim.opt.shiftwidth     = 4
+vim.opt.expandtab      = true
 
 vim.api.nvim_create_autocmd("Filetype", {
     group = vim.api.nvim_create_augroup("TwoTabWidth", { clear = true }),
-    pattern = { "c", "css", "cpp", "html", "ocaml", "javascript*", "typescript*", "svelte", "wgsl", "markdown", "typst", "nix" },
+    pattern = { "css", "html", "ocaml", "javascript*", "typescript*", "svelte", "wgsl", "markdown", "typst", "nix" },
     callback = function()
         vim.opt_local.shiftwidth = 2
         vim.opt_local.tabstop = 2
@@ -54,7 +55,7 @@ vim.g.loaded_netrwPlugin = 1
 
 vim.opt.termguicolors    = true
 
-vim.opt.pumheight = 10
+vim.opt.pumheight        = 10
 ----------------------------
 
 -- folding

@@ -1,4 +1,14 @@
-{ pkgs, ... }: {
+{ config, pkgs, lib, ... }:
+let
+  # load in script to setup global python env with uv
+  scriptContent = builtins.readFile ./scripts/setup-global-python-env.sh;
+  substitutedContent = lib.replaceStrings
+    [ "@uv@" "@python@" ]
+    [ "${pkgs.uv}/bin/uv" "${pkgs.python3}/bin/python" ]
+    scriptContent;
+  setupScript = pkgs.writeShellScriptBin "setup-global-python" substitutedContent;
+in
+{
   programs.home-manager.enable = true;
 
   home.username = "zack4";
@@ -15,34 +25,49 @@
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
     ".config/wezterm/wezterm.lua".source = ./.config/wezterm/wezterm.lua;
     ".config/git/config.inc".source = ./.config/git/config.inc;
+    ".config/uv/global-requirements.txt".source = ./.config/uv/global-requirements.txt;
   };
 
+  # set up global python env
+  home.activation.setup-global-python-env = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    echo "Running setup for global Python environment..."
+    ${setupScript}/bin/setup-global-python
+  '';
+
    home.packages = with pkgs; [
+    # system utilities
     cowsay fortune
     git gh tmux coreutils
     imagemagick htop
     tree wget croc curl rlwrap 
     pandoc yt-dlp fastfetch
-    ripgrep fd fzf lazygit jq
+    ripgrep fd fzf lazygit jq yazi
+    hyperfine
     wezterm skhd yabai
-    micromamba deno nodejs
-    roswell coq julia-bin
-    typst #opam
-    # (pkgs.libqalculate.override { gnuplot = (pkgs.gnuplot.override { withWxGTK = true; }); })
     cmatrix exiftool binwalk
     mpv-unwrapped yt-dlp speedtest-cli
-    hyperfine
-    wezterm
-    podman podman-compose
     gtkwave
     ffmpeg
-    texliveTeTeX
+    podman podman-compose
+    # languages
+    uv deno nodejs go
+    roswell coq julia-bin # opam # currently broken
+    gcc cmake
+    # typesetting
+    typst
+    texliveFull texlivePackages.revtex4 entr texlivePackages.aastex
+    # accounting
+    hledger hledger-ui hledger-web
   ];
 
   programs.git = {
     enable = true;
-    userName = "Zachary Huang";
-    userEmail = "55601738+zack466@users.noreply.github.com";
+    settings = {
+      user = {
+        name = "Zachary Huang";
+        email = "55601738+zack466@users.noreply.github.com";
+      };
+    };
     includes = [ { path = "~/.config/git/config.inc"; } ];
   };
 
@@ -55,36 +80,17 @@
     enableZshIntegration = true;
   };
 
-  programs.nnn = {
-    enable = true;
-    plugins = {
-      src = (pkgs.fetchFromGitHub {
-          owner = "jarun";
-          repo = "nnn";
-          rev = "v4.0";
-          sha256 = "sha256-Hpc8YaJeAzJoEi7aJ6DntH2VLkoR6ToP6tPYn3llR7k=";
-          }) + "/plugins";
-      mappings = {
-        k = "chksum";
-        f = "fzcd";
-        z = "autojump";
-        n = "!open .";
-        g = "!lazygit";
-      };
-    };
-  };
-
   programs.zsh = {
     enable = true;
     defaultKeymap = "emacs";
     dirHashes = {
       docs  = "$HOME/Documents";
       dl    = "$HOME/Downloads";
-      term  = "$HOME/Caltech/SP25";
+      cal   = "$HOME/Caltech";
+      term  = "$HOME/Caltech/FA26";
     };
     sessionVariables = {
       EDITOR = "nvim";
-      MAMBA_ROOT_PREFIX = "$HOME/micromamba";
     };
     autosuggestion = {
       enable = true;
@@ -100,9 +106,15 @@
     '';
     # aliases and stuff
     initContent = ''
+      GLOBAL_VENV_PATH="$HOME/.local/share/uv/global-python"
+      if [ -d "$GLOBAL_VENV_PATH/bin" ]; then
+        export PATH="$GLOBAL_VENV_PATH/bin:$PATH"
+      fi
+
       export PATH="$PATH:$HOME/.local/bin"
-      eval $(opam env)
-      eval "$(micromamba shell hook --shell zsh)"
+      export PATH="$PATH:$HOME/go/bin"
+      export PATH="$PATH:$HOME/.opencode/bin"
+      eval $(opam env) # currently installed with macports
       source $HOME/.zsh_aliases
     '';
   };
@@ -111,9 +123,6 @@
     enable = true;
     settings = {
       command_timeout = 1000;
-      env_var.NNNLVL = {
-        format = "(on [floor $env_value ](yellow))";
-      };
     };
   };
 

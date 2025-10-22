@@ -1,0 +1,7 @@
+# General-purpose Python packages
+numpy
+pandas
+matplotlib
+scipy
+ipython
+
