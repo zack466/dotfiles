@@ -4,4 +4,11 @@ sync: update
 update:
 	nix flake update
 
-.PHONY: update
+upgrade:
+	sudo nix upgrade-nix
+
+clean:
+	nh clean all
+
+
+.PHONY: update sync upgrade clean

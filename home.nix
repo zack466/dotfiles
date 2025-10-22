@@ -50,9 +50,12 @@ in
     ffmpeg
     podman podman-compose
     # languages
-    uv deno nodejs go
-    roswell coq julia-bin # opam # currently broken
+    uv deno nodejs go zig
+    roswell coq julia-bin
+    rustup
+    # opam # currently broken
     gcc cmake
+    opencode
     # typesetting
     typst
     texliveFull texlivePackages.revtex4 entr texlivePackages.aastex
@@ -70,10 +73,6 @@ in
     };
     includes = [ { path = "~/.config/git/config.inc"; } ];
   };
-
-  home.sessionPath = [
-    "$HOME/.local/bin"
-  ];
 
   programs.fzf = {
     enable = true;
@@ -104,7 +103,7 @@ in
     completionInit = ''
       bindkey '^ ' autosuggest-accept
     '';
-    # aliases and stuff
+    # aliases, path modifications, etc (home.sessionPath not working consistently)
     initContent = ''
       GLOBAL_VENV_PATH="$HOME/.local/share/uv/global-python"
       if [ -d "$GLOBAL_VENV_PATH/bin" ]; then
@@ -113,7 +112,8 @@ in
 
       export PATH="$PATH:$HOME/.local/bin"
       export PATH="$PATH:$HOME/go/bin"
-      export PATH="$PATH:$HOME/.opencode/bin"
+      export PATH="$PATH:$HOME/.cargo/bin"
+
       eval $(opam env) # currently installed with macports
       source $HOME/.zsh_aliases
     '';
@@ -137,5 +137,12 @@ in
   programs.neovim = {
     enable = true;
     vimAlias = true;
+
+  };
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/Users/zack4/dotfiles"; # sets NH_OS_FLAKE variable for you
   };
 }
