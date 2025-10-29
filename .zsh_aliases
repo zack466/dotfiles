@@ -30,6 +30,7 @@ alias sbcl="ros run"
 alias hm=home-manager
 alias charge="system_profiler SPPowerDataType | grep -A3 -B7 'Condition'"
 alias balatro="/Users/zack4/Library/Application\ Support/Steam/steamapps/common/Balatro/run_lovely_macos.sh"
+alias imgcat="wezterm imgcat --max-pixels 2300000"
 
 notif() {
 	osascript -e "display notification \"$1\" sound name \"Ping\""

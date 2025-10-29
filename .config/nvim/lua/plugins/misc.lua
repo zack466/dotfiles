@@ -6,7 +6,7 @@ return {
 
             local Rule = require("nvim-autopairs.rule")
             local autopairs = require("nvim-autopairs")
-            autopairs.add_rule(Rule("$", "$", { "tex", "typst" }))
+            autopairs.add_rule(Rule("$", "$", { "tex" }))
         end
     },
     { "tpope/vim-surround" },

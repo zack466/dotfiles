@@ -24,6 +24,7 @@ in
     ".config/skhd/skhdrc".source = ./.config/skhd/skhdrc;
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
     ".config/wezterm/wezterm.lua".source = ./.config/wezterm/wezterm.lua;
+    ".config/yazi/yazi.toml".source = ./.config/yazi/yazi.toml;
     ".config/git/config.inc".source = ./.config/git/config.inc;
     ".config/uv/global-requirements.txt".source = ./.config/uv/global-requirements.txt;
   };
@@ -51,7 +52,8 @@ in
     podman podman-compose
     # languages
     uv deno nodejs go zig
-    roswell coq julia-bin
+    # roswell
+    coq julia-bin
     rustup
     # opam # currently broken
     gcc cmake
@@ -128,10 +130,6 @@ in
 
   programs.zoxide = {
     enable = true;
-  };
-
-  home.shellAliases = {
-    # see .zsh_aliases
   };
 
   programs.neovim = {
