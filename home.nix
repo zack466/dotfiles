@@ -24,6 +24,7 @@ in
     ".config/skhd/skhdrc".source = ./.config/skhd/skhdrc;
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
     ".config/wezterm/wezterm.lua".source = ./.config/wezterm/wezterm.lua;
+    ".config/ghostty/config".source = ./.config/ghostty/config;
     ".config/yazi/yazi.toml".source = ./.config/yazi/yazi.toml;
     ".config/git/config.inc".source = ./.config/git/config.inc;
     ".config/uv/global-requirements.txt".source = ./.config/uv/global-requirements.txt;
@@ -52,6 +53,7 @@ in
     podman podman-compose
     # languages
     uv deno nodejs go zig
+    ghc haskell-language-server stack
     # roswell
     coq julia-bin
     rustup

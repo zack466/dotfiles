@@ -78,7 +78,7 @@ return {
 
             -- LSPs not installed with mason.nvim
             -- nvim_lsp.gdscript.setup({})
-            -- nvim_lsp.hls.setup({})
+            nvim_lsp.hls.setup({})
             nvim_lsp.ocamllsp.setup({})
 
             -- This is absolutely cooked
