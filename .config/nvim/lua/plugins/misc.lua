@@ -6,6 +6,16 @@ return {
 
             local Rule = require("nvim-autopairs.rule")
             local autopairs = require("nvim-autopairs")
+            local cond = require("nvim-autopairs.conds")
+
+            -- Remove single quotes rule only for lisp
+            autopairs.remove_rule("'")
+            autopairs.add_rule(
+                Rule("'", "'")
+                :with_pair(cond.not_filetypes({ "lisp", "scheme" }))
+            )
+
+            -- for latex
             autopairs.add_rule(Rule("$", "$", { "tex" }))
         end
     },
