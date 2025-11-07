@@ -1,10 +1,4 @@
 return {
-    -- {
-    --     "mfussenegger/nvim-jdtls",
-    --     ft = { "java" },
-    -- },
-    { "mason-org/mason.nvim",           version = "^1.0.0" },
-    { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPre", "BufNewFile" },
@@ -12,89 +6,46 @@ return {
         dependencies = {
             { "folke/lazydev.nvim", ft = "lua" },
             "williamboman/mason.nvim",
-            "williamboman/mason-lspconfig.nvim",
             "stevearc/conform.nvim",
         },
         config = function()
             require("lazydev").setup()
 
+            -- Used to be used for html and cssls?
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
             capabilities.textDocument.completion.completionItem.snippetSupport = true
 
             vim.diagnostic.config({ virtual_text = false })
-
-            -- Mason.nvim config
             require("mason").setup()
-            require("mason-lspconfig").setup()
-            require("mason-lspconfig").setup_handlers({
-                function(server_name)
-                    vim.lsp.config(server_name, {})
-                end,
-                ["tinymist"] = function()
-                    vim.lsp.config("tinymist", {
-                        settings = {
-                            formatterMode = "typstyle",
-                            exportPdf = "onSave",
-                        }
-                    })
-                end
-                --     ["html"] = function()
-                --         nvim_lsp.html.setup({ capabilities = capabilities })
-                --     end,
-                --     ["cssls"] = function()
-                --         nvim_lsp.cssls.setup({ capabilities = capabilities })
-                --     end,
-                --     ["rust_analyzer"] = function()
-                --         nvim_lsp.rust_analyzer.setup({
-                --             settings = {
-                --                 ["rust-analyzer"] = {
-                --                     check = {
-                --                         overrideCommand = {
-                --                             "cargo",
-                --                             "clippy",
-                --                             "--all-features",
-                --                             "--all-targets",
-                --                             "--workspace",
-                --                             "--message-format=json",
-                --                             -- "--target=wasm32-unknown-unknown",
-                --                         },
-                --                     },
-                --                 },
-                --             },
-                --         })
-                --     end,
-                --     ["tsserver"] = function()
-                --         nvim_lsp.tsserver.setup({
-                --             settings = {
-                --                 typescript = { format = { semicolons = "insert" } },
-                --                 javascript = { format = { semicolons = "insert" } },
-                --             },
-                --         })
-                --     end,
-                --     ["jdtls"] = function() end, -- Use nvim-jdtls instead
-            })
 
-            -- LSPs not installed with mason.nvim
-            -- nvim_lsp.gdscript.setup({})
-            vim.lsp.config("hls", {})
-            vim.lsp.config("ocamllsp", {})
-
-            -- This is absolutely cooked
+            vim.lsp.enable({ "pyright", "ts_ls", "coq_lsp", "gdscript", "hls",
+                             "ocamllsp", "rocls", "lua_ls", "html", "cssls" })
+                             --
             vim.lsp.config("ghdl_ls", {
                 cmd = { "/Users/zack4/micromamba/bin/ghdl-ls" }
             })
 
-            -- vim.api.nvim_create_autocmd("LspAttach", {
-            --     group = vim.api.nvim_create_augroup("LspKeybinds", {}),
-            --     callback = function(args)
-            --         -- Use Treesitter instead of LSP
-            --         -- local client = assert(vim.lsp.get_client_by_id(args.data.client_id), "invalid client")
-            --         -- client.server_capabilities.semanticTokensProvider = nil
-            --     end,
-            -- })
+            -- Formatters and Linters with conform.nvim, replacing LSP
+            local conform = require("conform")
+            conform.setup({
+                formatters_by_ft = {
+                    asm = { "asmfmt" },
+                    bash = { "shfmt" },
+                    lua = { "stylua" },
+                    ocaml = { "ocamlformat" },
+                    haskell = { "fourmolu" },
+                    python = { "isort", "flake8", "black" },
+                    cpp = { "clang-format" },
+                    javascript = { "prettierd",  "eslint_d" },
+                    typescript = { "prettierd",  "eslint_d" },
+                    javascriptreact = { "prettierd", "eslint_d" },
+                    typescriptreact = { "prettierd", "eslint_d" },
+                },
+            })
 
-            -- Use Semantic Tokens AFTER Treesitter (see above to disable semantic tokens)
-            -- vim.highlight.priorities.semantic_tokens = 95
+            -- vim.keymap.set("n", "<leader>vf", function()
+            --     conform.format({ lsp_fallback = true })
+            -- end)
         end,
     },
     {

@@ -155,7 +155,6 @@ require("which-key").add({
         { "<leader>e",  vim.diagnostic.open_float,                          desc = "open float" },
         { "<leader>lf", "<CMD>FormatBuffer<CR>",                            desc = "format" },
         { "<C-l>",      vim.lsp.buf.signature_help,                         mode = "i" },
-
     },
 
     {
