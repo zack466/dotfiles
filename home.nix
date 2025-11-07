@@ -7,6 +7,9 @@ let
     [ "${pkgs.uv}/bin/uv" "${pkgs.python3}/bin/python" ]
     scriptContent;
   setupScript = pkgs.writeShellScriptBin "setup-global-python" substitutedContent;
+
+  # Allows neovim to write to folder as well, like lazy.lock
+  mkSymlink = link : config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${link}";
 in
 {
   programs.home-manager.enable = true;
@@ -20,7 +23,7 @@ in
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".zsh_aliases".source = ./.zsh_aliases;
-    ".config/nvim".source = ./.config/nvim;
+    ".config/nvim".source = mkSymlink ".config/nvim";  # two way symlink
     ".config/skhd/skhdrc".source = ./.config/skhd/skhdrc;
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
     ".config/wezterm/wezterm.lua".source = ./.config/wezterm/wezterm.lua;
