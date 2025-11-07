@@ -18,8 +18,6 @@ return {
         config = function()
             require("lazydev").setup()
 
-            local nvim_lsp = require("lspconfig")
-
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
             capabilities.textDocument.completion.completionItem.snippetSupport = true
 
@@ -30,10 +28,10 @@ return {
             require("mason-lspconfig").setup()
             require("mason-lspconfig").setup_handlers({
                 function(server_name)
-                    nvim_lsp[server_name].setup({})
+                    vim.lsp.config(server_name, {})
                 end,
                 ["tinymist"] = function()
-                    nvim_lsp.tinymist.setup({
+                    vim.lsp.config("tinymist", {
                         settings = {
                             formatterMode = "typstyle",
                             exportPdf = "onSave",
@@ -78,11 +76,11 @@ return {
 
             -- LSPs not installed with mason.nvim
             -- nvim_lsp.gdscript.setup({})
-            nvim_lsp.hls.setup({})
-            nvim_lsp.ocamllsp.setup({})
+            vim.lsp.config("hls", {})
+            vim.lsp.config("ocamllsp", {})
 
             -- This is absolutely cooked
-            nvim_lsp.ghdl_ls.setup({
+            vim.lsp.config("ghdl_ls", {
                 cmd = { "/Users/zack4/micromamba/bin/ghdl-ls" }
             })
 
