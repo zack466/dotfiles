@@ -5,3 +5,7 @@ matplotlib
 scipy
 ipython
 
+# web scraping
+requests
+bs4
+lxml

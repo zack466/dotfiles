@@ -18,11 +18,18 @@ return {
             vim.diagnostic.config({ virtual_text = false })
             require("mason").setup()
 
-            vim.lsp.enable({ "pyright", "ts_ls", "coq_lsp", "gdscript", "hls",
-                             "ocamllsp", "rocls", "lua_ls", "html", "cssls" })
-                             --
+            vim.lsp.enable({ "pyright", "ts_ls", "hls", "ocamllsp", "lua_ls",
+                             "html", "cssls", "tinymist", "ghdl_ls" })
+
             vim.lsp.config("ghdl_ls", {
                 cmd = { "/Users/zack4/micromamba/bin/ghdl-ls" }
+            })
+
+            vim.lsp.config("tinymist", {
+                settings = {
+                    formatterMode = "typstyle",
+                    exportPdf = "onSave",
+                }
             })
 
             -- Formatters and Linters with conform.nvim, replacing LSP
@@ -36,8 +43,8 @@ return {
                     haskell = { "fourmolu" },
                     python = { "isort", "flake8", "black" },
                     cpp = { "clang-format" },
-                    javascript = { "prettierd",  "eslint_d" },
-                    typescript = { "prettierd",  "eslint_d" },
+                    javascript = { "prettierd", "eslint_d" },
+                    typescript = { "prettierd", "eslint_d" },
                     javascriptreact = { "prettierd", "eslint_d" },
                     typescriptreact = { "prettierd", "eslint_d" },
                 },

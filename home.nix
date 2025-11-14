@@ -54,7 +54,7 @@ in
     ffmpeg
     podman podman-compose
     # languages
-    uv deno nodejs go zig
+    uv deno nodejs go zig bun
     ghc haskell-language-server stack
     roswell
     coq julia-bin
