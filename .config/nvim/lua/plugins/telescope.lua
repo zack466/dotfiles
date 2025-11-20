@@ -3,7 +3,7 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
         defaults = {
-            file_ignore_patterns = { "^.git/", "^node_modules/" },
+            file_ignore_patterns = { "^.git/", "^node_modules/", "^.bundle%-libs/" },
             mappings = {
                 i = {
                     ["<C-o>"] = function(prompt_bufnr)

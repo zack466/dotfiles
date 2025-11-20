@@ -6,30 +6,28 @@ return {
         "hrsh7th/cmp-path",
         "hrsh7th/cmp-cmdline",
         "hrsh7th/cmp-omni",
-        -- "saadparwaiz1/cmp_luasnip",
-        -- {
-        --     "L3MON4D3/LuaSnip",
-        --     config = function()
-        --         require("luasnip").config.setup({
-        --             store_selection_keys = "<S-TAB>", -- snippets using visual selection
-        --             enable_autosnippets = true,
-        --             update_events = "TextChanged,TextChangedI"
-        --         })
-        --         require("luasnip.loaders.from_vscode").lazy_load() -- friendly-snippets
-        --         require("luasnip.loaders.from_lua").lazy_load()    -- from luasnippets/
-        --     end,
-        --     dependencies = { "rafamadriz/friendly-snippets" },
-        -- }
+        "saadparwaiz1/cmp_luasnip",
+        {
+            "L3MON4D3/LuaSnip",
+            config = function()
+                require("luasnip").config.setup({
+                    store_selection_keys = "<S-TAB>", -- snippets using visual selection
+                    enable_autosnippets = true,
+                    update_events = "TextChanged,TextChangedI"
+                })
+                require("luasnip.loaders.from_lua").lazy_load()    -- from luasnippets/
+            end,
+        }
     },
     config = function()
         local cmp = require("cmp")
 
         cmp.setup {
-            -- snippet = {
-            --     expand = function(args)
-            --         require("luasnip").lsp_expand(args.body)
-            --     end,
-            -- },
+            snippet = {
+                expand = function(args)
+                    require("luasnip").lsp_expand(args.body)
+                end,
+            },
             mapping = {
                 ["<TAB>"] = cmp.mapping.confirm({ select = true }),
                 ["<C-n>"] = cmp.mapping.select_next_item(),
