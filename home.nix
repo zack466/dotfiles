@@ -56,15 +56,14 @@ in
     # languages
     uv deno nodejs go zig bun
     ghc haskell-language-server stack
-    # roswell
     sbcl sbclPackages.qlot-cli
     coq julia-bin
     rustup
     # opam # currently broken
     gcc cmake
-    opencode
     # typesetting
     typst entr
+    poppler-utils
     # texliveFull texlivePackages.revtex4 texlivePackages.aastex
     # accounting
     hledger hledger-ui hledger-web
