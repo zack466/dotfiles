@@ -1,0 +1,94 @@
+#! /usr/bin/env python3
+
+import subprocess
+import argparse
+import os
+import sys
+from pathlib import Path
+
+TYPST_TEMPLATE = r"""
+#import "@preview/codly:1.3.0": *
+
+#let COURSE = "EE/CS 10a"
+#let ASSIGNMENT = "Homework #2"
+#let AUTHOR = sys.inputs.at("author", default: "AUTHOR")
+#let TARGET_FILE = sys.inputs.at("file", default: "")
+
+#set page(margin: 0.75in, numbering: "1", paper: "us-letter", header-ascent: 20%)
+#set par(leading: 0.6em, justify: true)
+#set text(font: "DejaVu Sans Mono", size: 7pt)
+#show raw: set text(font: "DejaVu Sans Mono", size: 7pt)
+#show par: set block(spacing: 1.4em)
+#show heading: set block(above: 1.4em, below: 1em)
+#show link: set text(rgb(0, 0, 255))
+#show figure: set block(breakable: true)
+
+#show: codly-init.with()
+#codly(zebra-fill: none)
+
+#let codeblock(filename) = {
+  let display_name = filename.split("/").at(-1).split("\\").at(-1)
+
+  set page(
+    header: [
+      #COURSE #h(1fr) #ASSIGNMENT - #display_name #h(1fr) #AUTHOR
+      #move(dy: -1em, line(length: 100%)) 
+    ]
+  )
+  counter(page).update(1)
+  raw(read(filename), block: true)
+  pagebreak(weak: true, to: "odd")
+}
+
+#if TARGET_FILE != "" {
+  codeblock(TARGET_FILE)
+} else {
+  [Error: No file specified]
+}
+"""
+
+def run():
+    parser = argparse.ArgumentParser(description="Convert code to PDF via Typst")
+    parser.add_argument("file", help="Source code file to convert")
+    parser.add_argument("--author", default="AUTHOR", help="Author name for header")
+    args = parser.parse_args()
+
+    input_path = Path(args.file).resolve()
+    if not input_path.exists():
+        print(f"Error: File {input_path} not found.")
+        sys.exit(1)
+
+    temp_typ = Path(".code2pdf.typ")
+    output_pdf = Path(f"{input_path.name}.pdf")
+
+    # Write the embedded template to a temporary file
+    temp_typ.write_text(TYPST_TEMPLATE, encoding="utf-8")
+
+    # Construct command
+    # We set root to / (or C:\) to allow reading the input file from any location
+    root_dir = Path(os.path.abspath(os.sep))
+
+    command = [
+        "typst", "compile",
+        "--input", f"file={input_path}",
+        "--input", f"author={args.author}",
+        "--root", str(root_dir),
+        str(temp_typ),
+        str(output_pdf)
+    ]
+
+    try:
+        print(f"Processing {input_path.name}...")
+        subprocess.run(command, check=True, capture_output=True, text=True)
+        print(f"Created {output_pdf}")
+    except subprocess.CalledProcessError as e:
+        print("Typst Error:")
+        print(e.stderr)
+    except FileNotFoundError:
+        print("Error: 'typst' executable not found in PATH.")
+    finally:
+        if temp_typ.exists():
+            temp_typ.unlink()
+
+if __name__ == "__main__":
+    run()

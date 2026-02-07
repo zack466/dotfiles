@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 let
   # load in script to setup global python env with uv
-  scriptContent = builtins.readFile ./scripts/setup-global-python-env.sh;
+  scriptContent = builtins.readFile ./scripts/setup-global-python-env;
   substitutedContent = lib.replaceStrings
     [ "@uv@" "@python@" ]
     [ "${pkgs.uv}/bin/uv" "${pkgs.python3}/bin/python" ]
@@ -23,6 +23,7 @@ in
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".zsh_aliases".source = ./.zsh_aliases;
+    "scripts".source = mkSymlink "nvim";  # two way symlink
     ".config/nvim".source = mkSymlink ".config/nvim";  # two way symlink
     ".config/skhd/skhdrc".source = ./.config/skhd/skhdrc;
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
@@ -49,22 +50,24 @@ in
     hyperfine
     wezterm skhd yabai
     cmatrix exiftool binwalk
-    mpv-unwrapped yt-dlp speedtest-cli
+    # mpv-unwrapped
+    yt-dlp
     gtkwave
     ffmpeg
     podman podman-compose
     # languages
-    uv deno nodejs go zig bun
+    python3 uv deno nodejs bun
+    # go zig
     ghc haskell-language-server stack
     sbcl sbclPackages.qlot-cli
-    coq julia-bin
+    julia-bin
     rustup
     # opam # currently broken
     gcc cmake
     # typesetting
     typst entr
     poppler-utils
-    # texliveFull texlivePackages.revtex4 texlivePackages.aastex
+    texliveFull
     # accounting
     hledger hledger-ui hledger-web
   ];
@@ -117,6 +120,7 @@ in
       fi
 
       export PATH="$PATH:$HOME/.local/bin"
+      export PATH="$PATH:$HOME/.local/bin"
       export PATH="$PATH:$HOME/go/bin"
       export PATH="$PATH:$HOME/.cargo/bin"
 
@@ -133,6 +137,10 @@ in
   };
 
   programs.zoxide = {
+    enable = true;
+  };
+
+  programs.direnv = {
     enable = true;
   };
 

@@ -112,19 +112,6 @@ shift + alt - f : yabai -m window --toggle zoom-fullscreen
 # change layout of desktop
 shift + alt - a : yabai -m space --layout bsp
 shift + alt - d : yabai -m space --layout float
-shift + alt - s : yabai -m space --layout stack
-
-alt - k : yabai -m query --spaces --space \
-  | jq -re ".index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $has_index > 0 then nth($has_index - 1).id else nth($array_length - 1).id end' \
-  | xargs -I{} yabai -m window --focus {}
-
-alt - j : yabai -m query --spaces --space \
-  | jq -re ".index" \
-  | xargs -I{} yabai -m query --windows --space {} \
-  | jq -sre 'add | map(select(."is-minimized"==false)) | sort_by(.display, .frame.y, .frame.x, .id) | . as $array | length as $array_length | index(map(select(."has-focus"==true))) as $has_index | if $array_length - 1 > $has_index then nth($has_index + 1).id else nth(0).id end' \
-  | xargs -I{} yabai -m window --focus {}
 
 # opens terminal
 ctrl - return : /Applications/WezTerm.app/Contents/MacOS/wezterm start -- tmux
@@ -138,10 +125,26 @@ shift + alt - u : yabai -m window --toggle float; \
 shift + alt - i : yabai -m window --toggle float; \
         yabai -m window --resize abs:770:600
 
+# Top-Left: Move to grid 0,0
+alt - h : yabai -m window --toggle float; \
+          yabai -m window --grid 2:2:0:0:1:1
+
+# Bottom-Left: Move to grid 0,1
+alt - j : yabai -m window --toggle float; \
+          yabai -m window --grid 2:2:0:1:1:1
+
+# Top-Right: Move to grid 1,0
+alt - k : yabai -m window --toggle float; \
+          yabai -m window --grid 2:2:1:0:1:1
+
+# Bottom-Right: Move to grid 1,1
+alt - l : yabai -m window --toggle float; \
+          yabai -m window --grid 2:2:1:1:1:1
+
 
 # shift + alt - c : open -na "Google Chrome" --args --new-window "https://google.com"
 shift + alt - m : wezterm start -- ssh -L 8888:localhost:8888 -t zwhuang@mario.caltech.edu 'tmux new-session -A -s default'
-shift + alt - o : wezterm start -- ssh -t ugcs 'tmux new-session -A -s default'
+# shift + alt - o : wezterm start -- ssh -t ugcs 'tmux new-session -A -s default'
 
 shift + alt - c : open -na "Firefox Developer Edition" --args -no-remote -P "Personal"
 shift + ctrl + alt - c : open -na "Firefox Developer Edition" --args -no-remote -P "Caltech"

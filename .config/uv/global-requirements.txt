@@ -4,9 +4,15 @@ pandas
 matplotlib
 scipy
 ipython
+jupyter
+networkx
 
 # web scraping
 requests
 bs4
 lxml
 playwright
+networkx
+
+# llm
+llm

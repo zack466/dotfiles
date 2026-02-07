@@ -1,0 +1,50 @@
+#!/bin/zsh
+
+# Usage: ./insert_pdf.sh <original.pdf> <insert.pdf> <page_number> <output.pdf>
+# Example: ./insert_pdf.sh main.pdf extra.pdf 2 result.pdf
+# This inserts extra.pdf BEFORE page 2 of main.pdf.
+
+if [[ $# -ne 4 ]]; then
+    echo "Usage: $0 <original.pdf> <insert.pdf> <page_number> <output.pdf>"
+    exit 1
+fi
+
+ORIGINAL=$1
+INSERT=$2
+PAGE_NUM=$3
+OUTPUT=$4
+
+# Create a unique temporary directory
+TMP_DIR=$(mktemp -d /tmp/pdf_insert.XXXXXX)
+
+# 1. Separate the original PDF into individual pages
+# This creates files like /tmp/pdf_insert.XXXXXX/page-1.pdf, page-2.pdf, etc.
+pdfseparate "$ORIGINAL" "$TMP_DIR/page-%d.pdf"
+
+# Get total page count of the original
+TOTAL_PAGES=$(ls "$TMP_DIR" | grep -c "page-")
+
+# 2. Construct the list of files for pdfunite
+FILES_TO_JOIN=()
+
+# Add pages before the insertion point
+for (( i=1; i < PAGE_NUM; i++ )); do
+    FILES_TO_JOIN+=("$TMP_DIR/page-$i.pdf")
+done
+
+# Add the PDF to be inserted
+FILES_TO_JOIN+=("$INSERT")
+
+# Add the remaining pages
+for (( i=PAGE_NUM; i <= TOTAL_PAGES; i++ )); do
+    FILES_TO_JOIN+=("$TMP_DIR/page-$i.pdf")
+done
+
+# 3. Unite the files
+pdfunite "${FILES_TO_JOIN[@]}" "$OUTPUT"
+
+# Cleanup
+rm -rf "$TMP_DIR"
+
+echo "Successfully created $OUTPUT"
+

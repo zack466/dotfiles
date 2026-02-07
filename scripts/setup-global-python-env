@@ -1,3 +1,4 @@
+#!/bin/sh
 set -e
 
 # These paths are substituted by Nix during the build process
