@@ -6,6 +6,7 @@ scipy
 ipython
 jupyter
 networkx
+scikit-learn
 
 # web scraping
 requests

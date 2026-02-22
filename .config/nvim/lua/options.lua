@@ -75,3 +75,7 @@ set undofile
 set undolevels=1000
 set undoreload=10000
 ]]
+
+-- weird OSC 11 terminal issue?
+vim.opt.background = "dark"
+vim.opt.termguicolors = true

@@ -46,7 +46,7 @@ in
     imagemagick htop
     tree wget croc curl rlwrap 
     pandoc yt-dlp fastfetch
-    ripgrep fd fzf lazygit jq yazi
+    ripgrep fd fzf lazygit jq yazi nnn
     hyperfine
     wezterm skhd yabai
     cmatrix exiftool binwalk

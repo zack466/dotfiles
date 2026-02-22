@@ -64,6 +64,12 @@ require("which-key").add({
     },
 
     {
+        -- file picker
+        { "<C-n>",            "<CMD>NnnPicker %:p:h<CR>",                  desc = "toggle file explorer", mode = { "t", "n" } },
+        { "<leader>n",        "<CMD>NnnPicker<CR>",                        desc = "open file directory",  mode = { "n" } },
+    },
+
+    {
         -- git
         { "<leader>g",  group = "git" },
         -- { "<leader>gg", "<CMD>Lazygit<CR>",                                           desc = "lazygit" },
