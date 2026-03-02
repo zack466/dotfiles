@@ -133,6 +133,9 @@ in
     enable = true;
     settings = {
       command_timeout = 1000;
+      env_var.NNNLVL = {
+        format = "(on [floor $env_value ](yellow))";
+      };
     };
   };
 

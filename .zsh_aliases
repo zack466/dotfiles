@@ -25,6 +25,7 @@ alias boom="mpv ~/.local/assets/boom.mp3 &> /dev/null &"
 alias canon="mpv ~/.local/assets/canon.mp3 &> /dev/null &"
 alias slap="mpv ~/.local/assets/slap.mp3 &> /dev/null &"
 alias wt=wezterm
+alias nnn="nnn -e"
 alias code="open -a 'Visual Studio Code'"
 # alias sbcl="rlwrap ros run"
 alias hm=home-manager
