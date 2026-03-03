@@ -70,6 +70,8 @@ in
     texliveFull
     # accounting
     hledger hledger-ui hledger-web
+    # AI
+    opencode
   ];
 
   programs.git = {
