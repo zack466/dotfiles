@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+# Convert code to PDF via Typst
 
 import subprocess
 import argparse

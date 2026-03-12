@@ -1,4 +1,5 @@
 #!/bin/sh
+# Setup global python environment using uv
 set -e
 
 # These paths are substituted by Nix during the build process

@@ -1,4 +1,5 @@
 #!/bin/zsh
+# Insert a PDF into another PDF at a specific page
 
 # Usage: ./insert_pdf.sh <original.pdf> <insert.pdf> <page_number> <output.pdf>
 # Example: ./insert_pdf.sh main.pdf extra.pdf 2 result.pdf

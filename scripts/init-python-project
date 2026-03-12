@@ -1,4 +1,5 @@
 #! /bin/sh
+# Initialize a new python project using uv
 uv init .
 uv add numpy matplotlib pandas
 echo "source .venv/bin/activate" >> .envrc
