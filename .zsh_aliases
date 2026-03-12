@@ -52,6 +52,8 @@ function n() {
 	rm -f -- "$tmp"
 }
 
+alias pi="bunx @mariozechner/pi-coding-agent"
+
 ## ghdl (used for ghdl lsp)
 export GHDL=/opt/local/bin/ghdl
 
