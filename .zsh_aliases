@@ -43,16 +43,6 @@ pdfpages() {
 	pdftk $1 cat $2 output $3
 }
 
-# cd to any directory starting at $HOME
-# does not include ~/Library/
-sd(){
-  
-  dir=$(rg --hidden --files --null -g '!Library/' ${HOME} 2>/dev/null | xargs -0 dirname 2>/dev/null | awk '!x[$0]++' | fzf --height 10 --query "/$1")
-  
-  if [ ! -z "$dir" ]; then
-    cd $dir
-  fi
-}
 
 function n() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd

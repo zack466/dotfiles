@@ -23,7 +23,7 @@ in
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
     ".zsh_aliases".source = ./.zsh_aliases;
-    "scripts".source = mkSymlink "nvim";  # two way symlink
+    ".local/scripts".source = mkSymlink "scripts";  # two way symlink
     ".config/nvim".source = mkSymlink ".config/nvim";  # two way symlink
     ".config/skhd/skhdrc".source = ./.config/skhd/skhdrc;
     ".config/yabai/yabairc".source = ./.config/yabai/yabairc;
@@ -70,8 +70,6 @@ in
     texliveFull
     # accounting
     hledger hledger-ui hledger-web
-    # AI
-    opencode
   ];
 
   programs.git = {
@@ -101,6 +99,7 @@ in
     };
     sessionVariables = {
       EDITOR = "nvim";
+      SD_ROOT = "$HOME/.local/scripts";
     };
     autosuggestion = {
       enable = true;
@@ -142,6 +141,10 @@ in
   };
 
   programs.zoxide = {
+    enable = true;
+  };
+
+  programs.script-directory = {
     enable = true;
   };
 

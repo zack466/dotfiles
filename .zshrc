@@ -103,6 +103,8 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # bun completions
 [ -s "/Users/zack4/.bun/_bun" ] && source "/Users/zack4/.bun/_bun"
 
+alias pi="bunx @mariozechner/pi-coding-agent"
+
 ## N
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
