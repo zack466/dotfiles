@@ -1,11 +1,13 @@
 #! /usr/bin/env python3
-# Uploads files to THE NULL POINTER, a temporary file hosting service
+# A CLI for THE NULL POINTER, a temporary file hosting service
 
 import argparse
 import requests
 import os
 import sys
 import json
+import math
+import hashlib
 from datetime import datetime
 
 # default constants
@@ -15,10 +17,95 @@ OXO_URL = "https://0x0.st"
 
 ENTRIES_PATH = f"{STORAGE_DIR}/{ENTRIES_FILENAME}"
 
-HEADERS = { 'User-Agent': '0x0-cli/1.0' }
+HEADERS = { 'User-Agent': '0x0-cli/1.1' }
 
 def is_url(path):
     return path.startswith("http://") or path.startswith("https://")
+
+def compute_hash_and_size(path):
+    """
+    Computes hash and file size of a local or remote file.
+    """
+    sha256 = hashlib.sha256()
+    size = 0
+    max_size = 512 * 2**20
+    
+    try:
+        if is_url(path):
+            r = requests.get(path, stream=True, headers=HEADERS)
+            r.raise_for_status()
+            
+            cl = r.headers.get('Content-Length')
+            if cl and int(cl) > max_size:
+                return None, int(cl)
+
+            for chunk in r.iter_content(chunk_size=4096):
+                if chunk:
+                    sha256.update(chunk)
+                    size += len(chunk)
+                    if size > max_size:
+                        return None, size
+        else:
+            with open(path, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    sha256.update(chunk)
+                    size += len(chunk)
+                    if size > max_size:
+                        return None, size
+        return sha256.hexdigest(), size
+    except Exception:
+        return None, 0
+
+def find_entry(entries, path):
+    """
+    Queries for an entry based on its sha256 hash, 0x0 URL, or file hash. Does
+    not query based on filename, so it's possible to upload multiple files with
+    the same filename.
+    """
+    # 1. Exact hash or URL
+    if path in entries:
+        return path, entries[path]
+    for key, entry in entries.items():
+        if entry.get("url") == path:
+            return key, entry
+
+    # 2. Compute hash and size
+    file_hash, _ = compute_hash_and_size(path)
+    if file_hash and file_hash in entries:
+        return file_hash, entries[file_hash]
+
+    return None, None
+
+def calculate_expiry(file_size, expires=None):
+    """
+    Uses the formula provided at https://0x0.st/
+    """
+    now = datetime.now().timestamp()
+    if expires is not None:
+        if expires > 1000000000000:
+            return expires / 1000.0
+        else:
+            return now + expires * 3600
+    else:
+        min_age = 30
+        max_age = 365
+        max_size = 512.0 * 1024 * 1024
+        file_size = min(file_size, max_size)
+        retention = min_age + (min_age - max_age) * math.pow((file_size / max_size - 1), 3)
+        return now + retention * 24 * 3600
+
+def clean_expired_entries(entries):
+    """
+    Walks through the entries list and removes files that have expired.
+    """
+    now = datetime.now().timestamp()
+    expired = []
+    for key, entry in entries.items():
+        if "expiry_date" in entry and entry["expiry_date"] is not None and entry["expiry_date"] < now:
+            expired.append(key)
+    for key in expired:
+        entries.pop(key)
+    return len(expired)
 
 def input_yn(prompt):
     i = None
@@ -29,37 +116,49 @@ def input_yn(prompt):
         elif i in 'nN':
             return False
 
-def save_entry(entries, path, url, token):
+def save_entry(entries, path, url, token, file_size, expires_at=None, file_hash=None):
     filename = path if is_url(path) else os.path.basename(path)
-    if filename in entries:
-        prev = entries[filename]
-        overwrite = input_yn(f"Overwrite existing entry for {filename}: (url={prev['url']}, token={prev['token']}, date={prev['date']}) with (url={url}, token={token})? (y/n) ")
-        if not overwrite:
-            return
+    key = file_hash if file_hash else filename
 
-    entries[filename] = {"url": url, "token": token, "date": str(datetime.now()) }
+    entries[key] = {
+        "file_name": filename,
+        "upload_date": str(datetime.now()),
+        "expiry_date": expires_at,
+        "file_size": file_size,
+        "token": token,
+        "url": url
+    }
 
 def delete_file(entries, path):
-    filename = path if is_url(path) else os.path.basename(path)
-    if filename in entries:
-        prev = entries[filename]
-        token = prev['token']
+    """
+    Deletes a file from 0x0 given either:
+        - the file's sha-256 hash
+        - the file's current 0x0 URL
+        - the file, based on the hash (computed from a local or remote file)
+    """
+    found_key, prev = find_entry(entries, path)
+            
+    if found_key and prev:
+        token = prev.get('token', '')
         if len(token) > 0:
             data = { "token": token, "delete": " " }
             req = requests.post(prev['url'], data=data, headers=HEADERS)
-            entries.pop(filename)
+            entries.pop(found_key)
             if req.status_code == 404:
                 print("File already deleted or expired.")
             else:
                 print("Succesfully deleted entry")
         else:
-            print(f"Missing token in entry: {entries[filename]}, could not delete")
-            sys.exit(1, file=sys.stderr)
+            print(f"Missing token in entry, could not delete", file=sys.stderr)
+            sys.exit(1)
     else:
-        print(f"Could not find an entry matching {filename}", file=sys.stderr)
+        print(f"Could not find an entry matching {path}", file=sys.stderr)
         sys.exit(1)
 
 def upload_file(entries, path, expires=None):
+    """
+    Uploads a local file to 0x0
+    """
     if not os.path.exists(path):
         print(f"File not found: {path}", file=sys.stderr)
         sys.exit(1)
@@ -68,10 +167,24 @@ def upload_file(entries, path, expires=None):
         print("Cannot upload a directory", file=sys.stderr)
         sys.exit(1)
 
-    size = os.path.getsize(path)
+    file_hash, size = compute_hash_and_size(path)
+    
     if size > 512 * 2**20:
         print("File too large (greater than 512 MiB).")
         sys.exit(1)
+
+    filename = os.path.basename(path)
+
+    if file_hash in entries:
+        prev = entries[file_hash]
+        if prev.get("file_name") != filename:
+            print(f"Warning: This file has already been uploaded (previously uploaded under a different name: {prev.get('file_name')})", file=sys.stderr)
+        else:
+            print("Warning: This file has already been uploaded.", file=sys.stderr)
+        
+        overwrite = input_yn("Upload anyway? (y/n) ")
+        if not overwrite:
+            return
 
     files = { 'file': open(path, 'rb') }
     if expires is not None:
@@ -82,12 +195,33 @@ def upload_file(entries, path, expires=None):
     token = str(req.headers["X-Token"]).strip() if "X-Token" in req.headers else ""
 
     if len(token) > 0:
-        save_entry(entries, path, url, token)
+        expires_at = calculate_expiry(size, expires)
+        save_entry(entries, path, url, token, size, expires_at, file_hash)
         print(f"Succesfully uploaded file as {url}")
     else:
         print(f"File has already been uploaded at {url}")
 
 def upload_remote(entries, path, expires=None):
+    """
+    Uploads a remote file to 0x0
+    """
+    file_hash, size = compute_hash_and_size(path)
+    
+    if size > 512 * 2**20:
+        print("File too large (greater than 512 MiB).")
+        sys.exit(1)
+        
+    if file_hash and file_hash in entries:
+        prev = entries[file_hash]
+        if prev.get("file_name") != path:
+            print(f"Warning: This file has already been uploaded (previously uploaded under a different name: {prev.get('file_name')})", file=sys.stderr)
+        else:
+            print("Warning: This file has already been uploaded.", file=sys.stderr)
+        
+        overwrite = input_yn("Upload anyway? (y/n) ")
+        if not overwrite:
+            return
+
     data = { 'url': path }
     if expires is not None:
         data['expires'] = expires
@@ -96,10 +230,29 @@ def upload_remote(entries, path, expires=None):
     url = str(req.text).strip()
     token = str(req.headers["X-Token"]).strip() if "X-Token" in req.headers else ""
     if len(token) > 0:
-        save_entry(entries, path, url, token)
+        expires_at = calculate_expiry(size, expires)
+        save_entry(entries, path, url, token, size, expires_at, file_hash)
         print(f"Succesfully uploaded file as {url}")
     else:
         print(f"File has already been uploaded at {url}")
+
+def print_entry_info(entry):
+    print(f"File Name: {entry.get('file_name')}")
+    print(f"URL: {entry.get('url')}")
+    print(f"Upload Date: {entry.get('upload_date')}")
+    
+    exp = entry.get('expiry_date')
+    if exp:
+        try:
+            dt = datetime.fromtimestamp(exp)
+            print(f"Expiry Date: {dt.strftime('%Y-%m-%d %H:%M:%S')}")
+        except:
+            print(f"Expiry Date: {exp}")
+    else:
+        print("Expiry Date: Unknown")
+        
+    print(f"File Size: {entry.get('file_size')} bytes")
+    print(f"Token: {entry.get('token')}")
 
 parser = argparse.ArgumentParser(
         prog='0x0',
@@ -108,7 +261,10 @@ parser = argparse.ArgumentParser(
 parser.add_argument('path', nargs="?", default=None, help="The path of the file to upload (or search for)")
 parser.add_argument('-d', '--delete', action='store_true', help="Deletes an entry from 0x0, requires the token from the original upload")
 parser.add_argument('-e', '--expires', default=None, help="Expiration time in hours")
-parser.add_argument('-l', '--list', action='store_true', help="Shows existing entries stored on the system, can be given a filename to search for")
+parser.add_argument('-i', '--info', action='store_true', help="Shows the upload details of the specified file")
+parser.add_argument('-l', '--list', action='store_true', help="Shows the existing entries stored on the system")
+parser.add_argument('-c', '--clean', action='store_true', help="Clean the file store by removing expired entries")
+parser.add_argument('-s', '--signature', action='store_true', help="Computes the hash and size of a file")
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -124,31 +280,41 @@ if __name__ == "__main__":
 
     os.makedirs(os.path.dirname(STORAGE_DIR), exist_ok=True)
 
-    if not os.path.exists(ENTRIES_PATH):
-        ENTRIES = {}
-    else:
-        try:
-            with open(ENTRIES_PATH, "r") as f:
-                ENTRIES = json.load(f)
-        except:
-            print(f"Could not load entry file from {ENTRIES_PATH}\nThe file may be corrupted or have incorrect permissions.", file=sys.stderr)
-            sys.exit(1)
+    ENTRIES = {}
+
+    try:
+        with open(ENTRIES_PATH, "r") as f:
+            ENTRIES = json.load(f)
+    except:
+        print(f"Could not load entry file from {ENTRIES_PATH}\nThe file may be corrupted or have incorrect permissions.", file=sys.stderr)
+        sys.exit(1)
 
     if args.list:
-        if args.path is not None:
-            filename = path if is_url(path) else os.path.basename(path)
-            if filename in ENTRIES:
-                print(json.dumps(ENTRIES[filename], indent=4))
-            else:
-                print(f"Could not find an entry matching {filename}", file=sys.stderr)
-                sys.exit(1)
+        print(json.dumps(ENTRIES, indent=4))
+    elif args.info:
+        if args.path is None:
+            print("Please specify a file path to get info for.", file=sys.stderr)
+            sys.exit(1)
+            
+        found_key, found_entry = find_entry(ENTRIES, path)
+                    
+        if found_entry:
+            print_entry_info(found_entry)
         else:
-            print(json.dumps(ENTRIES, indent=4))
+            print(f"Could not find an entry matching {path}", file=sys.stderr)
+            sys.exit(1)
+    elif args.clean:
+        count = clean_expired_entries(ENTRIES)
+        print(f"Cleaned {count} expired entries.")
     elif args.path is None:
         parser.print_help(sys.stderr)
         sys.exit(1)
     elif args.delete:
         delete_file(ENTRIES, path)
+    elif args.signature:
+        file_hash, size = compute_hash_and_size(path)
+        print(file_hash)
+        print(size)
     elif is_url(path):
         upload_remote(ENTRIES, path, expires)
     else:
@@ -158,4 +324,3 @@ if __name__ == "__main__":
         json.dump(ENTRIES, f)
 
     sys.exit(0)
-
