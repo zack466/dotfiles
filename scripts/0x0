@@ -1,0 +1,161 @@
+#! /usr/bin/env python3
+# Uploads files to THE NULL POINTER, a temporary file hosting service
+
+import argparse
+import requests
+import os
+import sys
+import json
+from datetime import datetime
+
+# default constants
+STORAGE_DIR = f"{os.path.expanduser('~')}/.local/share/0x0"
+ENTRIES_FILENAME = "entries.json"
+OXO_URL = "https://0x0.st"
+
+ENTRIES_PATH = f"{STORAGE_DIR}/{ENTRIES_FILENAME}"
+
+HEADERS = { 'User-Agent': '0x0-cli/1.0' }
+
+def is_url(path):
+    return path.startswith("http://") or path.startswith("https://")
+
+def input_yn(prompt):
+    i = None
+    while True:
+        i = input(prompt)
+        if i in 'yY':
+            return True
+        elif i in 'nN':
+            return False
+
+def save_entry(entries, path, url, token):
+    filename = path if is_url(path) else os.path.basename(path)
+    if filename in entries:
+        prev = entries[filename]
+        overwrite = input_yn(f"Overwrite existing entry for {filename}: (url={prev['url']}, token={prev['token']}, date={prev['date']}) with (url={url}, token={token})? (y/n) ")
+        if not overwrite:
+            return
+
+    entries[filename] = {"url": url, "token": token, "date": str(datetime.now()) }
+
+def delete_file(entries, path):
+    filename = path if is_url(path) else os.path.basename(path)
+    if filename in entries:
+        prev = entries[filename]
+        token = prev['token']
+        if len(token) > 0:
+            data = { "token": token, "delete": " " }
+            req = requests.post(prev['url'], data=data, headers=HEADERS)
+            entries.pop(filename)
+            if req.status_code == 404:
+                print("File already deleted or expired.")
+            else:
+                print("Succesfully deleted entry")
+        else:
+            print(f"Missing token in entry: {entries[filename]}, could not delete")
+            sys.exit(1, file=sys.stderr)
+    else:
+        print(f"Could not find an entry matching {filename}", file=sys.stderr)
+        sys.exit(1)
+
+def upload_file(entries, path, expires=None):
+    if not os.path.exists(path):
+        print(f"File not found: {path}", file=sys.stderr)
+        sys.exit(1)
+
+    if os.path.isdir(path):
+        print("Cannot upload a directory", file=sys.stderr)
+        sys.exit(1)
+
+    size = os.path.getsize(path)
+    if size > 512 * 2**20:
+        print("File too large (greater than 512 MiB).")
+        sys.exit(1)
+
+    files = { 'file': open(path, 'rb') }
+    if expires is not None:
+        files['expires'] = expires
+
+    req = requests.post(OXO_URL, files=files, headers=HEADERS)
+    url = str(req.text).strip()
+    token = str(req.headers["X-Token"]).strip() if "X-Token" in req.headers else ""
+
+    if len(token) > 0:
+        save_entry(entries, path, url, token)
+        print(f"Succesfully uploaded file as {url}")
+    else:
+        print(f"File has already been uploaded at {url}")
+
+def upload_remote(entries, path, expires=None):
+    data = { 'url': path }
+    if expires is not None:
+        data['expires'] = expires
+
+    req = requests.post(OXO_URL, data=data, headers=HEADERS)
+    url = str(req.text).strip()
+    token = str(req.headers["X-Token"]).strip() if "X-Token" in req.headers else ""
+    if len(token) > 0:
+        save_entry(entries, path, url, token)
+        print(f"Succesfully uploaded file as {url}")
+    else:
+        print(f"File has already been uploaded at {url}")
+
+parser = argparse.ArgumentParser(
+        prog='0x0',
+        description='Uploads a file to 0x0.')
+
+parser.add_argument('path', nargs="?", default=None, help="The path of the file to upload (or search for)")
+parser.add_argument('-d', '--delete', action='store_true', help="Deletes an entry from 0x0, requires the token from the original upload")
+parser.add_argument('-e', '--expires', default=None, help="Expiration time in hours")
+parser.add_argument('-l', '--list', action='store_true', help="Shows existing entries stored on the system, can be given a filename to search for")
+
+if __name__ == "__main__":
+    args = parser.parse_args()
+    path = args.path
+
+    if args.expires is not None:
+        if not args.expires.isdigit():
+            print("Invalid expiration time", file=sys.stderr)
+            sys.exit(1)
+        expires = int(args.expires)
+    else:
+        expires = None
+
+    os.makedirs(os.path.dirname(STORAGE_DIR), exist_ok=True)
+
+    if not os.path.exists(ENTRIES_PATH):
+        ENTRIES = {}
+    else:
+        try:
+            with open(ENTRIES_PATH, "r") as f:
+                ENTRIES = json.load(f)
+        except:
+            print(f"Could not load entry file from {ENTRIES_PATH}\nThe file may be corrupted or have incorrect permissions.", file=sys.stderr)
+            sys.exit(1)
+
+    if args.list:
+        if args.path is not None:
+            filename = path if is_url(path) else os.path.basename(path)
+            if filename in ENTRIES:
+                print(json.dumps(ENTRIES[filename], indent=4))
+            else:
+                print(f"Could not find an entry matching {filename}", file=sys.stderr)
+                sys.exit(1)
+        else:
+            print(json.dumps(ENTRIES, indent=4))
+    elif args.path is None:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+    elif args.delete:
+        delete_file(ENTRIES, path)
+    elif is_url(path):
+        upload_remote(ENTRIES, path, expires)
+    else:
+        upload_file(ENTRIES, path, expires)
+
+    with open(ENTRIES_PATH, "w") as f:
+        json.dump(ENTRIES, f)
+
+    sys.exit(0)
+
