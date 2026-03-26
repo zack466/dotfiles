@@ -7,14 +7,17 @@ import os
 import sys
 from pathlib import Path
 
-TYPST_TEMPLATE = r"""
+# The top part of the template pulls strings from the CLI inputs
+TYPST_TEMPLATE_TOP = r"""
 #import "@preview/codly:1.3.0": *
 
-#let COURSE = "EE/CS 10a"
-#let ASSIGNMENT = "Homework #2"
-#let AUTHOR = sys.inputs.at("author", default: "AUTHOR")
-#let TARGET_FILE = sys.inputs.at("file", default: "")
+#let COURSE = sys.inputs.at("course", default: "Course")
+#let ASSIGNMENT = sys.inputs.at("assignment", default: "Assignment")
+#let AUTHOR = sys.inputs.at("author", default: "Author")
+"""
 
+# The bottom part sets up formatting and loops over our dynamically injected TARGET_FILES
+TYPST_TEMPLATE_BOTTOM = r"""
 #set page(margin: 0.75in, numbering: "1", paper: "us-letter", header-ascent: 20%)
 #set par(leading: 0.6em, justify: true)
 #set text(font: "DejaVu Sans Mono", size: 7pt)
@@ -28,7 +31,8 @@ TYPST_TEMPLATE = r"""
 #codly(zebra-fill: none)
 
 #let codeblock(filename) = {
-  let display_name = filename.split("/").at(-1).split("\\").at(-1)
+  // Using posix paths from Python, so we only need to split by forward slash
+  let display_name = filename.split("/").at(-1)
 
   set page(
     header: [
@@ -41,29 +45,48 @@ TYPST_TEMPLATE = r"""
   pagebreak(weak: true, to: "odd")
 }
 
-#if TARGET_FILE != "" {
-  codeblock(TARGET_FILE)
+#if TARGET_FILES.len() > 0 {
+  for file in TARGET_FILES {
+    codeblock(file)
+  }
 } else {
-  [Error: No file specified]
+  [Error: No files specified]
 }
 """
 
 def run():
-    parser = argparse.ArgumentParser(description="Convert code to PDF via Typst")
-    parser.add_argument("file", help="Source code file to convert")
-    parser.add_argument("--author", default="AUTHOR", help="Author name for header")
+    parser = argparse.ArgumentParser(description="Convert multiple code files into a single PDF via Typst")
+    
+    # New Arguments
+    parser.add_argument("files", nargs="+", help="Input source code files to convert")
+    parser.add_argument("-c", "--course", default="COURSE", help="Course name (e.g., 'EE/CS 10a')")
+    parser.add_argument("-a", "--assignment", default="ASSIGNMENT", help="Assignment name (e.g., 'Homework #2')")
+    parser.add_argument("-n", "--author", default="AUTHOR", help="Author name for header")
+    parser.add_argument("-o", "--output", default="output.pdf", help="Output PDF filename (default: output.pdf)")
+    
     args = parser.parse_args()
 
-    input_path = Path(args.file).resolve()
-    if not input_path.exists():
-        print(f"Error: File {input_path} not found.")
-        sys.exit(1)
+    # Validate all input files exist before proceeding
+    posix_paths = []
+    for f in args.files:
+        p = Path(f).resolve()
+        if not p.exists():
+            print(f"Error: File '{p}' not found.")
+            sys.exit(1)
+        # Typst requires POSIX style paths to read cleanly across OSs
+        posix_paths.append(p.as_posix())
 
     temp_typ = Path(".code2pdf.typ")
-    output_pdf = Path(f"{input_path.name}.pdf")
+    output_pdf = Path(args.output).resolve()
+
+    # Dynamically inject the array of validated file paths into the Typst template
+    files_array_str = ", ".join(f'"{p}"' for p in posix_paths)
+    injected_files_let = f"\n#let TARGET_FILES = ({files_array_str},)\n"
+    
+    full_template = TYPST_TEMPLATE_TOP + injected_files_let + TYPST_TEMPLATE_BOTTOM
 
     # Write the embedded template to a temporary file
-    temp_typ.write_text(TYPST_TEMPLATE, encoding="utf-8")
+    temp_typ.write_text(full_template, encoding="utf-8")
 
     # Construct command
     # We set root to / (or C:\) to allow reading the input file from any location
@@ -71,7 +94,8 @@ def run():
 
     command = [
         "typst", "compile",
-        "--input", f"file={input_path}",
+        "--input", f"course={args.course}",
+        "--input", f"assignment={args.assignment}",
         "--input", f"author={args.author}",
         "--root", str(root_dir),
         str(temp_typ),
@@ -79,15 +103,16 @@ def run():
     ]
 
     try:
-        print(f"Processing {input_path.name}...")
+        print(f"Processing {len(args.files)} files into {output_pdf.name}...")
         subprocess.run(command, check=True, capture_output=True, text=True)
-        print(f"Created {output_pdf}")
+        print(f"Created {output_pdf.name} successfully.")
     except subprocess.CalledProcessError as e:
         print("Typst Error:")
         print(e.stderr)
     except FileNotFoundError:
         print("Error: 'typst' executable not found in PATH.")
     finally:
+        # Clean up temporary Typst file
         if temp_typ.exists():
             temp_typ.unlink()
 
