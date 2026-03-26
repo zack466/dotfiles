@@ -1,4 +1,4 @@
-sync: update
+sync:
 	home-manager switch --flake . -b backup
 
 update:
