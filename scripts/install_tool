@@ -1,0 +1,175 @@
+#!/bin/bash
+
+# 1. Detect System Information
+OS_NAME=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH_NAME=$(uname -m)
+
+# Normalize Architecture and OS patterns for regex matching
+case "$ARCH_NAME" in
+    x86_64)  ARCH_PATTERN="x86_64|amd64|64bit" ;;
+    aarch64|arm64) ARCH_PATTERN="aarch64|arm64|ARM64" ;;
+    *) ARCH_PATTERN="$ARCH_NAME" ;;
+esac
+
+case "$OS_NAME" in
+    linux)  OS_PATTERN="linux|static|Linux|appimage" ;;
+    darwin) OS_PATTERN="darwin|macos|apple-darwin" ;;
+    *) OS_PATTERN="$OS_NAME" ;;
+esac
+
+mkdir -p "$HOME/Downloads"
+mkdir -p "$HOME/bin"
+
+get_repo() {
+    case "$1" in
+        # CLI Tools
+        lazygit)   echo "jesseduffield/lazygit" ;;
+        nvim)      echo "neovim/neovim" ;;
+        rg)        echo "BurntSushi/ripgrep" ;;
+        fd)        echo "sharkdp/fd" ;;
+        fzf)       echo "junegunn/fzf" ;;
+        zoxide)    echo "ajeetdsouza/zoxide" ;;
+        yt-dlp)    echo "yt-dlp/yt-dlp" ;;
+        hyperfine) echo "sharkdp/hyperfine" ;;
+        nnn)       echo "jarun/nnn" ;;
+        bun)       echo "oven-sh/bun" ;;
+        magick)    echo "ImageMagick/ImageMagick" ;;
+        ffmpeg)    echo "GyanD/codexffmpeg" ;;
+        tree)      echo "peteretelej/tree" ;;
+        croc)      echo "schollz/croc" ;;
+        uv)        echo "astral-sh/uv" ;;
+        typst)     echo "typst/typst" ;;
+        *)         echo "" ;;
+    esac
+}
+
+# Helper to extract URL with inference logic, sorted by shortest length
+extract_url() {
+    json_data=$1
+
+    # Tier 1: Strict Match (OS AND Architecture)
+    if command -v jq >/dev/null 2>&1; then
+        url=$(echo "$json_data" | jq -r --arg os "$OS_PATTERN" --arg arch "$ARCH_PATTERN" \
+            '[.assets[] | select(.name | ascii_downcase | test($os) and test($arch))] | sort_by(.name | length) | .[0].browser_download_url // empty')
+    else
+        url=$(echo "$json_data" | grep -o '"browser_download_url": "[^"]*"' | grep -Ei "$OS_PATTERN" | grep -Ei "$ARCH_PATTERN" | cut -d '"' -f 4 | awk '{print length($0) " " $0}' | sort -n | head -n 1 | cut -d ' ' -f 2)
+    fi
+
+    # Tier 2: Inference Fallbacks if Tier 1 failed
+    if [ -z "$url" ] || [ "$url" = "null" ]; then
+        if [ "$ARCH_NAME" = "x86_64" ]; then
+            if command -v jq >/dev/null 2>&1; then
+                url=$(echo "$json_data" | jq -r --arg os "$OS_PATTERN" \
+                    '[.assets[] | select(.name | ascii_downcase | test($os) and (test("arm|aarch|mips|ppc|riscv") | not))] | sort_by(.name | length) | .[0].browser_download_url // empty')
+            else
+                url=$(echo "$json_data" | grep -o '"browser_download_url": "[^"]*"' | grep -Ei "$OS_PATTERN" | grep -Eiv "arm|aarch|mips|ppc|riscv" | cut -d '"' -f 4 | awk '{print length($0) " " $0}' | sort -n | head -n 1 | cut -d ' ' -f 2)
+            fi
+        elif [ "$ARCH_NAME" = "aarch64" ] || [ "$ARCH_NAME" = "arm64" ]; then
+            if command -v jq >/dev/null 2>&1; then
+                url=$(echo "$json_data" | jq -r --arg arch "$ARCH_PATTERN" \
+                    '[.assets[] | select(.name | ascii_downcase | test($arch) and (test("windows|darwin|macos") | not))] | sort_by(.name | length) | .[0].browser_download_url // empty')
+            else
+                url=$(echo "$json_data" | grep -o '"browser_download_url": "[^"]*"' | grep -Ei "$ARCH_PATTERN" | grep -Eiv "windows|darwin|macos" | cut -d '"' -f 4 | awk '{print length($0) " " $0}' | sort -n | head -n 1 | cut -d ' ' -f 2)
+            fi
+        fi
+    fi
+    echo "$url"
+}
+
+install_pkg() {
+    cmd=$1
+    repo=$(get_repo "$cmd")
+
+    if [ -z "$repo" ]; then
+        echo "Error: No repository mapping found for '$cmd'"
+        return
+    fi
+
+    if command -v "$cmd" >/dev/null 2>&1; then
+        echo "'$cmd' is already installed. Skipping."
+        return
+    fi
+
+    echo "Searching for $cmd ($repo) for $OS_NAME-$ARCH_NAME..."
+    api_response=$(curl -s "https://api.github.com/repos/$repo/releases/latest")
+    download_url=$(extract_url "$api_response")
+
+    if [ -z "$download_url" ] || [ "$download_url" = "null" ]; then
+        echo "Error: Could not find a suitable release for '$cmd' on $OS_NAME ($ARCH_NAME)."
+        return
+    fi
+
+    filename=$(basename "$download_url")
+    dest_dir="$HOME/Downloads/${cmd}_dist"
+    mkdir -p "$dest_dir"
+
+    echo "Downloading $filename..."
+    wget -q --show-progress -O "$HOME/Downloads/$filename" "$download_url"
+
+    echo "Extracting/Processing..."
+    case "$filename" in
+        *.tar.gz|*.tgz) tar -xzf "$HOME/Downloads/$filename" -C "$dest_dir" ;;
+        *.tar.xz|*.txz) tar -xJf "$HOME/Downloads/$filename" -C "$dest_dir" ;;
+        *.zip)          unzip -q "$HOME/Downloads/$filename" -d "$dest_dir" ;;
+        *.7z)           7z x "$HOME/Downloads/$filename" -o"$dest_dir" > /dev/null ;;
+        *.xz)           
+            xz -d -c "$HOME/Downloads/$filename" > "$dest_dir/$cmd"
+            chmod +x "$dest_dir/$cmd"
+            ;;
+        *.AppImage)     
+            cp "$HOME/Downloads/$filename" "$dest_dir/$cmd.AppImage"
+            chmod +x "$dest_dir/$cmd.AppImage"
+            ;;
+        *)              
+            if file -b "$HOME/Downloads/$filename" | grep -Eqi 'executable|mach-o|script'; then
+                cp "$HOME/Downloads/$filename" "$dest_dir/$cmd"
+                chmod +x "$dest_dir/$cmd"
+            else
+                echo "Error: '$filename' has an unrecognized extension and does not appear to be an executable. Skipping."
+                return
+            fi
+            ;;
+    esac
+
+    # Find executable and symlink (Cascading Fallback)
+    if [ -f "$dest_dir/$cmd.AppImage" ]; then
+        binary_path="$dest_dir/$cmd.AppImage"
+    else
+        # 1. Try exact name match
+        binary_path=$(find "$dest_dir" -type f -name "$cmd" -perm -111 2>/dev/null | head -n 1)
+        
+        # 2. Try partial name match (e.g., nnn-static, rg-linux)
+        if [ -z "$binary_path" ]; then
+            binary_path=$(find "$dest_dir" -type f -name "${cmd}*" -perm -111 2>/dev/null | head -n 1)
+        fi
+        
+        # 3. Fallback: Any executable in the directory
+        if [ -z "$binary_path" ]; then
+            binary_path=$(find "$dest_dir" -type f -perm -111 2>/dev/null | head -n 1)
+        fi
+    fi
+
+    if [ -n "$binary_path" ]; then
+        # We always symlink it to the expected $cmd name
+        ln -sf "$binary_path" "$HOME/bin/$cmd"
+        
+        # Print the actual found executable name for clarity
+        found_name=$(basename "$binary_path")
+        if [ "$found_name" != "$cmd" ]; then
+            echo "Successfully linked ($found_name) as ~/bin/$cmd"
+        else
+            echo "Successfully linked $cmd to ~/bin/$cmd"
+        fi
+    else
+        echo "Error: Could not find a valid executable in the downloaded release."
+    fi
+}
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <pkg1> <pkg2> ..."
+    exit 1
+fi
+
+for pkg in "$@"; do
+    install_pkg "$pkg"
+done
