@@ -19,6 +19,12 @@ in
   home.stateVersion = "25.05";
   home.enableNixpkgsReleaseCheck = false;
 
+  # allow claude code
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      "claude-code"
+    ];
+
   # config files not specified in nix
   home.file = {
     ".tmux.conf".source = ./.tmux.conf;
@@ -70,6 +76,9 @@ in
     texliveFull
     # accounting
     hledger hledger-ui hledger-web
+    claude-code
+    # fixes some compile issues on darwin
+    darwin.cctools
   ];
 
   programs.git = {
@@ -158,11 +167,5 @@ in
     enable = true;
     vimAlias = true;
 
-  };
-  programs.nh = {
-    enable = true;
-    clean.enable = true;
-    clean.extraArgs = "--keep-since 4d --keep 3";
-    flake = "/Users/zack4/dotfiles"; # sets NH_OS_FLAKE variable for you
   };
 }

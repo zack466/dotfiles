@@ -72,9 +72,11 @@ require("which-key").add({
     {
         -- git
         { "<leader>g",  group = "git" },
-        -- { "<leader>gg", "<CMD>Lazygit<CR>",                                           desc = "lazygit" },
+        { "<leader>gG", "<CMD>Lazygit<CR>",                                           desc = "lazygit" },
         -- gonna try to start using neogit, let's see how this goes!
         { "<leader>gg", "<CMD>lua require('neogit').open({ kind = 'floating' })<CR>", desc = "neogit" },
+        { "<leader>gd", "<CMD>DiffviewOpen<CR>", desc = "Open Diffview" },
+        { "<leader>gc", "<CMD>DiffviewClose<CR>", desc = "Close Diffview" },
     },
 
     {

@@ -11,18 +11,14 @@ return {
         config = function()
             require("lazydev").setup()
 
-            -- Used to be used for html and cssls?
-            local capabilities = require("cmp_nvim_lsp").default_capabilities()
-            capabilities.textDocument.completion.completionItem.snippetSupport = true
-
             vim.diagnostic.config({ virtual_text = false })
             require("mason").setup()
 
             vim.lsp.enable({ "pyright", "ts_ls", "hls", "ocamllsp", "lua_ls",
-                             "html", "cssls", "tinymist", "ghdl_ls" })
+                             "html", "cssls", "tinymist", "ghdl_ls", "clangd" })
 
             vim.lsp.config("ghdl_ls", {
-                cmd = { "/Users/zack4/micromamba/bin/ghdl-ls" }
+                cmd = { "ghdl-ls" }
             })
 
             vim.lsp.config("tinymist", {

@@ -72,4 +72,61 @@ return {
     --         ]]
     --     end
     -- }
+    {
+        "obsidian-nvim/obsidian.nvim",
+        version = "*",
+        lazy = true,
+        -- ft = "markdown",
+        event = {
+            "BufReadPre " .. vim.fn.expand("~") .. "/Obsidian/*.md",
+            "BufNewFile " .. vim.fn.expand("~") .. "/Obsidian/*.md",
+        },
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "saghen/blink.cmp",
+        },
+        opts = {
+            workspaces = {
+                {
+                    name = "Zack",
+                    path = "/Users/zack4/Obsidian",
+                },
+            },
+            completion = {
+                blink = true,
+            },
+            legacy_commands = false,
+            note_id_func = function(title)
+                if title ~= nil then
+                    return title:gsub(" ", "-"):gsub("[^%w%s-]", ""):lower()
+                else
+                    return tostring(os.time())
+                end
+            end,
+        },
+        config = function(_, opts)
+            require("obsidian").setup(opts)
+            vim.keymap.set("n", "gf", "<CMD>Obsidian follow_link<CR>", { noremap = true, silent = true })
+        end,
+    },
+    {
+        "junegunn/vim-easy-align",
+        config = function()
+            vim.cmd [[
+            " Start interactive EasyAlign in visual mode (e.g. vipga)
+            xmap ga <Plug>(EasyAlign)
+
+            " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+            nmap ga <Plug>(EasyAlign)
+            ]]
+        end
+    },
+    {
+        "leath-dub/snipe.nvim",
+        keys = {
+            {"gb", function () require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu"}
+        },
+        opts = {}
+    },
+    { "sindrets/diffview.nvim" }
 }
