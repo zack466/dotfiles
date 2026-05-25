@@ -2,6 +2,7 @@ alias l="ls -CF";
 alias ls="ls --color"
 alias la="ls -lahF";
 alias lg="lazygit";
+alias vim=nvim
 alias neofetch="fastfetch -c neofetch";
 alias mp3="yt-dlp -x --audio-format mp3 -o '%(title)s.%(ext)s'";
 alias mp4="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' -o '%(title)s.%(ext)s'";

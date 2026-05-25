@@ -54,7 +54,7 @@ in
     pandoc yt-dlp fastfetch
     ripgrep fd fzf lazygit jq yazi nnn
     hyperfine
-    wezterm skhd yabai
+    wezterm skhd yabai neovim
     cmatrix exiftool binwalk
     # mpv-unwrapped
     yt-dlp
@@ -62,7 +62,7 @@ in
     ffmpeg
     podman podman-compose
     # languages
-    python3 uv deno nodejs bun
+    python3 uv nodejs bun
     # go zig
     ghc haskell-language-server stack
     sbcl sbclPackages.qlot-cli
@@ -163,9 +163,4 @@ in
     nix-direnv.enable = true;
   };
 
-  programs.neovim = {
-    enable = true;
-    vimAlias = true;
-
-  };
 }
