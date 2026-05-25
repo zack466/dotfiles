@@ -1,24 +1,14 @@
 return {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
     event = { "BufReadPre", "BufNewFile" },
     build = ":TSUpdate",
     config = function()
-        -- Vim doesn't recognize WGSL as a filetype yet
         vim.filetype.add({ extension = { wgsl = "wgsl" } })
 
-        require("nvim-treesitter.configs").setup({
-            highlight = {
-                enable = true,
-            },
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = "<CR>",
-                    node_incremental = "<CR>",
-                    scope_incremental = "<S-CR>",
-                    node_decremental = "<BS>",
-                },
-            },
+        -- Use the new setup location
+        require("nvim-treesitter").setup({
+            highlight = { enable = true },
             ensure_installed = {
                 "json", "typescript", "javascript", "latex", "ocaml", "haskell", "python", "cpp"
             }
