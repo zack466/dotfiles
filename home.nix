@@ -51,13 +51,12 @@ in
     git gh tmux coreutils
     imagemagick htop
     tree wget croc curl rlwrap 
-    pandoc yt-dlp fastfetch
+    pandoc (yt-dlp.override { jsRuntime = nodejs; }) fastfetch
     ripgrep fd fzf lazygit jq yazi nnn
     hyperfine
     wezterm skhd yabai neovim
     cmatrix exiftool # binwalk
     # mpv-unwrapped
-    yt-dlp
     gtkwave
     ffmpeg
     podman podman-compose
