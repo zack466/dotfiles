@@ -8,7 +8,7 @@ upgrade:
 	sudo nix upgrade-nix
 
 clean:
-	nh clean all
-
+	nix-collect-garbage -d
+	nix store optimise
 
 .PHONY: update sync upgrade clean

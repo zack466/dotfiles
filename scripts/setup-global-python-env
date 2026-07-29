@@ -14,10 +14,13 @@ GLOBAL_VENV_PATH="$HOME/.local/share/uv/global-python"
 # Ensure the base directory exists
 mkdir -p "$(dirname "$GLOBAL_VENV_PATH")"
 
-# Create the virtual environment if it doesn't exist
-if [ ! -d "$GLOBAL_VENV_PATH" ]; then
+# (Re)create the virtual environment if it doesn't exist, its interpreter is
+# broken (e.g. the nix store path it points to was garbage-collected), or it
+# points to a different python than the current nix one
+VENV_PYTHON_TARGET="$(readlink "$GLOBAL_VENV_PATH/bin/python" 2>/dev/null || true)"
+if [ ! -x "$GLOBAL_VENV_PATH/bin/python" ] || [ "$VENV_PYTHON_TARGET" != "$PYTHON_BIN" ]; then
   echo "Creating global Python environment with uv..."
-  "$UV_BIN" venv "$GLOBAL_VENV_PATH" --python "$PYTHON_BIN"
+  "$UV_BIN" venv --clear "$GLOBAL_VENV_PATH" --python "$PYTHON_BIN"
 fi
 
 # Compute dependencies for top-level requirements

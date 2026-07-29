@@ -55,7 +55,7 @@ in
     ripgrep fd fzf lazygit jq yazi nnn
     hyperfine
     wezterm skhd yabai neovim
-    cmatrix exiftool binwalk
+    cmatrix exiftool # binwalk
     # mpv-unwrapped
     yt-dlp
     gtkwave
